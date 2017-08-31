@@ -1,2 +1,1 @@
 # Mung
-react-native app
