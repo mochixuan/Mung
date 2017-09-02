@@ -1,7 +1,7 @@
 import {StackNavigator} from 'react-navigation'
 
 import Main from './pages/main/Main'
-import Home from './pages/home/Home'
+import Home from './pages/movie/Movie'
 
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator'
 
