@@ -3,25 +3,14 @@ import {
     View,
     Text,
     Image,
+    StatusBar,
 } from 'react-native'
 
-import {show} from "../../utils/ToastUtils"
+import {TabOptions} from '../../utils/Utils'
 
 export default class Movie extends Component {
 
-    static navigationOptions = {
-        tabBarLabel: "Movie",
-        tabBarIcon: (tintColor) => (
-            <Image
-                style={{
-                    width: 26,
-                    height: 26,
-                    tintColor:{tintColor}
-                }}
-                source={require('../../data/img/ic_tab_movie.png')}
-            />
-        )
-    }
+    static navigationOptions = TabOptions('Movie',require('../../data/img/ic_tab_movie.png'))
 
     constructor(props) {
         super(props)
@@ -30,6 +19,11 @@ export default class Movie extends Component {
     render() {
         return (
             <View>
+                <StatusBar
+                    animated = {true}
+                    backgroundColor = 'blue'
+                    barStyle = 'light-content'
+                />
                 <Text>asasa</Text>
             </View>
         )

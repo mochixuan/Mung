@@ -1,19 +1,22 @@
-import {Image} from 'react-native'
+import React from 'react'
+import {
+    Image
+} from 'react-native'
 
-const TabOptions = (tabName,tabIcon) => {
-    return {
-        tabBarLabel: {tabName},
-        tabBarIcon: (tintColor) => (
+const TabOptions = (labal,icon)=>{
+    return ({
+        tabBarLabel: labal,
+        tabBarIcon: ({tintColor}) => (
             <Image
                 style={{
                     width: 26,
                     height: 26,
-                    tintColor:{tintColor}
+                    tintColor:tintColor
                 }}
-                source={tabIcon}
+                source={icon}
             />
         )
-    }
+    })
 }
 
 export {TabOptions}

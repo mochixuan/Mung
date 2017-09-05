@@ -9,7 +9,7 @@ let show = (data)=>{
             hideOnPress: true,
             delay: 0,
             backgroundColor: '#f5f5f5',
-            textColor: '#222',
+            textColor: '#222222',
         })
     }
 }

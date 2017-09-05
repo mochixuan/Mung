@@ -21,6 +21,7 @@ const BaseStyles = StyleSheet.create({
 })
 
 export {
+    MainBg,
     MainColor,
     GrayColor,
     White,
