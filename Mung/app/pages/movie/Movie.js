@@ -1,16 +1,15 @@
 import React,{Component} from 'react'
 import {
+    StyleSheet,
     View,
     Text,
     Image,
     StatusBar,
 } from 'react-native'
-
-import {TabOptions} from '../../utils/Utils'
+import {MainBg,MainColor} from '../base/BaseStyle'
+import Swiper from 'react-native-swiper'
 
 export default class Movie extends Component {
-
-    static navigationOptions = TabOptions('Movie',require('../../data/img/ic_tab_movie.png'))
 
     constructor(props) {
         super(props)
@@ -18,15 +17,21 @@ export default class Movie extends Component {
 
     render() {
         return (
-            <View>
+            <View style={styles.container}>
                 <StatusBar
                     animated = {true}
-                    backgroundColor = 'blue'
+                    backgroundColor = {MainColor}
                     barStyle = 'light-content'
                 />
-                <Text>asasa</Text>
             </View>
         )
     }
 
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: MainBg
+    },
+})

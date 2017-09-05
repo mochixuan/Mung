@@ -43,7 +43,7 @@ const MainTabPage = TabNavigator({
 * 实现跳转的栈
 * */
 const App = StackNavigator({
-    MainTabPage: {screen:MainTabPage},
+    //MainTabPage: {screen:MainTabPage},
     Movie: {screen:Movie}
 },{
     navigationOptions: {
