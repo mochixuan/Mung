@@ -1,17 +1,47 @@
+import ErrorBean from './ErrorBean'
 
-const NetWork_Request_Error = 0;    //网络请求错误
-const Nuknown_Error = 1; //未知错误
+const Nuknown_Error = 0; //未知错误
+const NetWork_Request_Error = 1;    //网络请求错误
+const BAD_REQUEST = 400; //请求的地址不存在或者包含不支持的参数
+const UNAUTHORIZED = 401;  //数据未授权
+const FORBIDDEN = 403;  //数据被禁止访问访问
+const NOT_FOUND = 404;  //请求的资源不存在或被删除
+const INTERNAL_SERVER_ERROR = 500;  //内部错误
 
 class ErrorAnayle {
 
-    getErrorMsg(code) {
+    getErrorBean(code) {
+        const errorBean = new ErrorBean();
         if (code != null && code instanceof Number) {
+            errorBean.setErrorCode(code);
             switch (code) {
-                case 0:
-                    return "网络请求错误";
+                case Nuknown_Error:
+                    errorBean.setErrorMsg("未知错误");
+                    break;
+                case NetWork_Request_Error:
+                    errorBean.setErrorMsg("网络请求错误");
+                    break;
+                case BAD_REQUEST:
+                    errorBean.setErrorMsg("请求的地址不存在或者包含不支持的参数");
+                    break;
+                case UNAUTHORIZED:
+                    errorBean.setErrorMsg("数据未授权");
+                    break;
+                case FORBIDDEN:
+                    errorBean.setErrorMsg("数据被禁止访问访问");
+                    break;
+                case NOT_FOUND:
+                    errorBean.setErrorMsg("请求的资源不存在或被删除");
+                    break;
+                case INTERNAL_SERVER_ERROR:
+                    errorBean.setErrorMsg("内部错误");
+                    break;
+                default:
+                    errorBean.setErrorMsg("未知错误");
+                    break;
             }
         }
-        return "未知错误"
+        return errorBean;
     }
 
 }

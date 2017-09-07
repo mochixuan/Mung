@@ -17,6 +17,10 @@ const BaseStyles = StyleSheet.create({
     baseBlackText: {
         fontSize: 16,
         color: BlackTextColor,
+    },
+    baseIcon: {
+        width:26,
+        height: 26,
     }
 })
 

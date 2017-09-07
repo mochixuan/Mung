@@ -1,5 +1,6 @@
 
-import {ErrorAnayle,Nuknown_Error,NetWork_Request_Error} from './ErrorAnayle'
+import {Nuknown_Error, NetWork_Request_Error, ErrorAnayle} from './ErrorAnayle'
+import {ErrorBean} from "./ErrorBean";
 
 /*基础链接头*/
 const BaseUrl = "https://api.douban.com/v2"
@@ -13,9 +14,23 @@ export default class HttpMovieManager {
         return new Promise((resolve,reject) => {
             this.fetchNetData(BaseUrl+Movie_Hoting_Url)
                 .then((data)=>{
-
+                    if (data != null) {
+                        if (data.code != null && data.code instanceof Number) {
+                            reject(ErrorAnayle.getErrorBean(data.code))
+                        } else if (data.count != null && data.count>0){
+                            resolve(data)
+                        } else {
+                            reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                        }
+                    } else {
+                        reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                    }
                 }).catch((error)=>{
-
+                    if (error != null && error instanceof ErrorBean) {
+                        reject(error)
+                    } else {
+                        reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                    }
             })
         })
     }
@@ -29,7 +44,7 @@ export default class HttpMovieManager {
                     resolve(responseData);
                 })
                 .catch((error)=>{
-                    reject(error)
+                    reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
                 })
                 .done();
         })
