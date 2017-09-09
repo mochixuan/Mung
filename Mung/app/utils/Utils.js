@@ -1,7 +1,10 @@
 import React from 'react'
 import {
-    Image
+    Image,
+    Dimensions
 } from 'react-native'
+
+const {width,height} = Dimensions.get('window');
 
 const TabOptions = (labal,icon)=>{
     return ({
@@ -19,4 +22,4 @@ const TabOptions = (labal,icon)=>{
     })
 }
 
-export {TabOptions}
+export {TabOptions,width,height}
