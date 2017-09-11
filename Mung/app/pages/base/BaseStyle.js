@@ -6,7 +6,7 @@ const White = '#ffffff'
 const Translucent = 'rgba(125,125,125,0.6)'
 const MainBg = '#f5f5f5'
 const GrayWhiteColor = '#f5f5f5'
-const MikeWhiteColor = '#e0e0e0'
+const MikeWhiteColor = '#f0ffff'
 const BlackTextColor = '#444444'
 const WhiteTextColor = '#ffffff'
 

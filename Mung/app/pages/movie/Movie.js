@@ -6,7 +6,7 @@ import {
     Image,
     StatusBar,
 } from 'react-native'
-import {MainBg, MainColor, BaseStyles, WhiteTextColor, Translucent, BlackTextColor} from '../base/BaseStyle'
+import {MainBg, MainColor,MikeWhiteColor, BaseStyles, WhiteTextColor, Translucent, BlackTextColor} from '../base/BaseStyle'
 import Swiper from 'react-native-swiper'
 import {show} from '../../utils/ToastUtils'
 import {width} from '../../utils/Utils'
@@ -14,6 +14,7 @@ import {App_Name} from '../../data/constant/BaseContant'
 import TouchableView from '../widget/TouchableView'
 import ErrorBean from '../../data/http/ErrorBean'
 import HttpMovieManager from '../../data/http/HttpMovieManager'
+import StarRating from 'react-native-star-rating'
 
 export default class Movie extends Component {
 
@@ -51,22 +52,53 @@ export default class Movie extends Component {
             }
             return items.map((item,i)=>{
                 return (
-                    <Image
+                    <View
                         key={i}
-                        source={{uri:item.images.large}}
-                        resizeMode='stretch'
-                        style={{
-                            height: 240,
-                            margin:20,
-                            width:width,
-                            backgroundColor: "#f00",
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}>
-                        <Text style={{
-                            color: BlackTextColor,
-                        }}>{item.title}</Text>
-                    </Image>
+                        style={styles.swiper_children_view}>
+                        <Image
+                            style={styles.swiper_children_cover}
+                            source={{uri:item.images.large}}/>
+                        <View style={styles.swiper_children_right}>
+                            <Text style={styles.swiper_children_title}
+                                  numberOfLines={1}>
+                                {item.title}
+                            </Text>
+                            <View style={styles.swiper_children_director}>
+                                <Image
+                                    source={{uri:item.directors[0].avatars.small}}
+                                    style={styles.swiper_children_director_img}
+                                />
+                                <Text style={styles.swiper_children_director_name}
+                                    numberOfLines={1}>
+                                    {item.directors[0].name}
+                                </Text>
+                            </View>
+                            <View style={styles.swiper_children_casts_view}>
+                                <Text
+                                    style={styles.swiper_children_casts_text}
+                                    numberOfLines={2}>
+                                    主演: {item.casts.map((data,i)=>data.name).join(' ')}
+                                </Text>
+                            </View>
+                            <View style={styles.swiper_children_genres_view}
+                                  numberOfLines={2}>
+                                <Text style={styles.swiper_children_genres_text}>{item.genres.join(" ")}</Text>
+                            </View>
+                            <View style={styles.swiper_children_rating_view}>
+                                <StarRating
+                                    disabled={false}
+                                    rating={item.rating.average/2}
+                                    maxStars={5}
+                                    halfStarEnabled={true}
+                                    emptyStar={require('../../data/img/icon_unselect.png')}
+                                    halfStar={require('../../data/img/icon_half_select.png')}
+                                    fullStar={require('../../data/img/icon_selected.png')}
+                                    starStyle={{width: 20, height: 20}}
+                                    selectedStar={(rating)=>{}}/>
+                                <Text style={styles.swiper_children_rating_text}>{item.rating.average}</Text>
+                            </View>
+                        </View>
+                    </View>
                 )
             })
         } else {
@@ -133,7 +165,6 @@ export default class Movie extends Component {
                 <View style={styles.swiper}>
                     <Swiper
                         height={240}
-                        style={styles.swiper_view}
                         autoplay={true}
                         autoplayTimeout={4}
                         dot = {<View style={styles.swiper_dot}/>}
@@ -143,7 +174,7 @@ export default class Movie extends Component {
                 </View>
                 {/*分类栏*/}
                 <View style={styles.cate_view}>
-
+                    <Text>分类蓝</Text>
                 </View>
             </View>
         )
@@ -179,9 +210,6 @@ const styles = StyleSheet.create({
     swiper: {
         height: 240,
     },
-    swiper_view: {
-        height: 240,
-    },
     swiper_dot: {
         backgroundColor: Translucent,
         width: 20,
@@ -197,6 +225,71 @@ const styles = StyleSheet.create({
         borderRadius: 1,
         marginLeft: 4,
         marginRight: 4,
+    },
+    swiper_children_view: {
+        height: 220,
+        flexDirection: 'row',
+        backgroundColor: MikeWhiteColor,
+        alignItems: 'center',
+        margin :10,
+        paddingLeft:10,
+        paddingRight: 10,
+        borderRadius: 6,
+    },
+    swiper_children_cover: {
+        width: 128,
+        height: 200,
+        borderRadius: 4,
+    },
+    swiper_children_right: {
+        marginTop: 20,
+        height: 200,
+        marginLeft: 20,
+    },
+    swiper_children_title: {
+        fontSize: 18,
+        marginBottom: 10,
+    },
+    swiper_children_director: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    swiper_children_director_img: {
+        width: 26,
+        height: 26,
+        borderRadius: 13,
+        marginRight: 8,
+    },
+    swiper_children_director_name: {
+        fontSize: 14,
+    },
+    swiper_children_casts_view: {
+        width: width-190,
+        marginBottom: 10,
+    },
+    swiper_children_casts_text: {
+        fontSize:14,
+        flexWrap: 'wrap',
+    },
+    swiper_children_rating_view: {
+        flexDirection: 'row',
+        marginBottom: 10,
+        alignItems: 'center',
+    },
+    swiper_children_rating_text: {
+        fontSize: 14,
+        color: '#ffcc33',
+        fontWeight: '500',
+        marginLeft: 8,
+    },
+    swiper_children_genres_view: {
+        width: width-190,
+        marginBottom: 10,
+    },
+    swiper_children_genres_text: {
+        fontSize:14,
+        flexWrap: 'wrap',
     },
     cate_view: {
         flex: 1,
