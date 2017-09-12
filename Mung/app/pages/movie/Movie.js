@@ -5,16 +5,18 @@ import {
     Text,
     Image,
     StatusBar,
+    TouchableHighlight
 } from 'react-native'
 import {MainBg, MainColor,MikeWhiteColor, BaseStyles, WhiteTextColor, Translucent, BlackTextColor} from '../base/BaseStyle'
 import Swiper from 'react-native-swiper'
 import {show} from '../../utils/ToastUtils'
 import {width} from '../../utils/Utils'
-import {App_Name} from '../../data/constant/BaseContant'
+import {App_Name,Cate_Data} from '../../data/constant/BaseContant'
 import TouchableView from '../widget/TouchableView'
 import ErrorBean from '../../data/http/ErrorBean'
 import HttpMovieManager from '../../data/http/HttpMovieManager'
 import StarRating from 'react-native-star-rating'
+import LinearGradient from 'react-native-linear-gradient'
 
 export default class Movie extends Component {
 
@@ -120,19 +122,26 @@ export default class Movie extends Component {
     }
 
     cateChildrenView() {
-        const items = ["aa","bb","cc","dd"];
-        return items.map((item,i)=>{
+        return Cate_Data.map((item,i)=>{
             return (
-                <TouchableView
-                    style={styles.cate_children_view}>
-                    <Image
-                        source={require('../../data/img/ic_tab_movie.png')}
-                        style={styles.cate_children_image}/>
-                    <Text
-                        style={styles.cate_children_text}>
-                        {item}
-                    </Text>
-                </TouchableView>
+                <TouchableHighlight
+                    key={i}
+                    style={styles.cate_children_touchview}
+                    underlayColor='rgba(100,50,200,0.1)'
+                    onPress={()=>show(item.title)}>
+                        <LinearGradient
+                            onPress={()=>{show(item.title)}}
+                            colors={item.colors}
+                            style={styles.cate_children_linear}>
+                            <Image
+                                source={item.icon}
+                                style={styles.cate_children_image}/>
+                            <Text
+                                style={styles.cate_children_text}>
+                                {item.title}
+                            </Text>
+                        </LinearGradient>
+                </TouchableHighlight>
             )
         })
     }
@@ -164,17 +173,18 @@ export default class Movie extends Component {
                 {/*banner栏*/}
                 <View style={styles.swiper}>
                     <Swiper
-                        height={240}
+                        height={220}
                         autoplay={true}
                         autoplayTimeout={4}
                         dot = {<View style={styles.swiper_dot}/>}
-                        activeDot = {<View style={styles.swiper_activeDot}/>}>
+                        activeDot = {<View style={styles.swiper_activeDot}/>}
+                        paginationStyle={styles.swiper_pagination}>
                         {this.swiperChildrenView()}
                     </Swiper>
                 </View>
                 {/*分类栏*/}
                 <View style={styles.cate_view}>
-                    <Text>分类蓝</Text>
+                    {this.cateChildrenView()}
                 </View>
             </View>
         )
@@ -208,26 +218,30 @@ const styles = StyleSheet.create({
         right: 0,
     },
     swiper: {
-        height: 240,
+        height: 220,
     },
     swiper_dot: {
         backgroundColor: Translucent,
-        width: 20,
-        height: 3,
+        width: 16,
+        height: 2,
         borderRadius: 1,
-        marginLeft: 4,
-        marginRight: 4,
+        marginLeft: 2,
+        marginRight: 2,
     },
     swiper_activeDot: {
         backgroundColor: MainColor,
-        width: 20,
-        height: 3,
+        width: 16,
+        height: 2,
         borderRadius: 1,
-        marginLeft: 4,
-        marginRight: 4,
+        marginLeft: 2,
+        marginRight: 2,
+    },
+    swiper_pagination: {
+        justifyContent: 'flex-end',
+        marginRight: 20,
     },
     swiper_children_view: {
-        height: 220,
+        height: 200,
         flexDirection: 'row',
         backgroundColor: MikeWhiteColor,
         alignItems: 'center',
@@ -237,13 +251,13 @@ const styles = StyleSheet.create({
         borderRadius: 6,
     },
     swiper_children_cover: {
-        width: 128,
-        height: 200,
+        width: 112,
+        height: 180,
         borderRadius: 4,
     },
     swiper_children_right: {
         marginTop: 20,
-        height: 200,
+        height: 180,
         marginLeft: 20,
     },
     swiper_children_title: {
@@ -292,23 +306,31 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
     },
     cate_view: {
-        flex: 1,
+        height: 100,
         flexDirection: 'row',
         flexWrap: 'wrap',
+        marginLeft:10,
+        marginRight:10,
     },
-    cate_children_view: {
-        width: width/3,
-        height: 80,
-        backgroundColor: '#ff23d3',
+    cate_children_touchview: {
+        width: width/2-20,
+        height: 42,
+        marginBottom: 8,
+        marginLeft: 5,
+        marginRight: 5,
+    },
+    cate_children_linear: {
+        width: width/2-20,
+        height: 42,
         borderRadius: 4,
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
     },
     cate_children_image: {
         width: 26,
         height: 26,
-        marginLeft: 20,
-        tintColor:WhiteTextColor,
+        marginRight: 12,
     },
     cate_children_text: {
         fontSize: 18,
