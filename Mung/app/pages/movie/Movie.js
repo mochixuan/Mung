@@ -5,9 +5,11 @@ import {
     Text,
     Image,
     StatusBar,
-    TouchableHighlight
+    FlatList,
+    ScrollView,
+    RefreshControl,
 } from 'react-native'
-import {MainBg, MainColor,MikeWhiteColor, BaseStyles, WhiteTextColor, Translucent, BlackTextColor} from '../base/BaseStyle'
+import {MainBg, MainColor,MikeWhiteColor, BaseStyles, WhiteTextColor, GrayWhiteColor,Translucent, BlackTextColor,GrayColor} from '../base/BaseStyle'
 import Swiper from 'react-native-swiper'
 import {show} from '../../utils/ToastUtils'
 import {width} from '../../utils/Utils'
@@ -18,12 +20,15 @@ import HttpMovieManager from '../../data/http/HttpMovieManager'
 import StarRating from 'react-native-star-rating'
 import LinearGradient from 'react-native-linear-gradient'
 
+const itemHight = 200;
+
 export default class Movie extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
             hotMovies:[],
+            refreshing: false,
         }
         this.HttpMovies  = new HttpMovieManager();
         this.requestData();
@@ -33,7 +38,8 @@ export default class Movie extends Component {
         this.HttpMovies.getHottingMovie()
             .then((movies)=>{
                 this.setState({
-                    hotMovies:movies
+                    hotMovies:movies,
+                    refreshing: false,
                 })
             })
             .catch((error)=>{
@@ -42,16 +48,15 @@ export default class Movie extends Component {
                 } else {
                     show("网络错误")
                 }
+                this.setState({
+                    refreshing: false,
+                })
             })
     }
 
-    swiperChildrenView() {
-        let movieDatas = this.state.hotMovies.subjects;
-        if (movieDatas != null && movieDatas.length>4) {
-            let items=[];
-            for (let i=0;i<4;i++) {
-                items.push(movieDatas[i]);
-            }
+    _swiperChildrenView() {
+        let items = this.getHotMovieDatas(true);
+        if (items != null && items.length>0) {
             return items.map((item,i)=>{
                 return (
                     <View
@@ -121,71 +126,164 @@ export default class Movie extends Component {
         }
     }
 
-    cateChildrenView() {
+    _cateChildrenView() {
         return Cate_Data.map((item,i)=>{
             return (
-                <TouchableHighlight
+                <TouchableView
                     key={i}
                     style={styles.cate_children_touchview}
-                    underlayColor='rgba(100,50,200,0.1)'
                     onPress={()=>show(item.title)}>
+                    <View style={styles.cate_children_view}>
                         <LinearGradient
-                            onPress={()=>{show(item.title)}}
                             colors={item.colors}
                             style={styles.cate_children_linear}>
                             <Image
                                 source={item.icon}
                                 style={styles.cate_children_image}/>
-                            <Text
-                                style={styles.cate_children_text}>
-                                {item.title}
-                            </Text>
                         </LinearGradient>
-                </TouchableHighlight>
+                        <Text
+                            style={styles.cate_children_text}>
+                            {item.title}
+                        </Text>
+                    </View>
+                </TouchableView>
             )
         })
+    }
+
+    _renderItemView(item) {
+        return (
+            <View style={styles.flat_item}>
+                <TouchableView
+                    style={styles.flat_item_touchableview}
+                    onPress={()=>show(item.title)}>
+                    <View style={styles.flat_item_view}>
+                        <Image
+                            source={{uri:item.images.large}}
+                            style={styles.flat_item_image}/>
+                        <View style={styles.flat_item_detail}>
+                            <Text style={styles.flat_item_title}
+                                  numberOfLines={1}>
+                                {item.title}
+                            </Text>
+                            <View style={styles.flat_item_rating_view}>
+                                <StarRating
+                                    disabled={false}
+                                    rating={item.rating.average/2}
+                                    maxStars={5}
+                                    halfStarEnabled={true}
+                                    emptyStar={require('../../data/img/icon_unselect.png')}
+                                    halfStar={require('../../data/img/icon_half_select.png')}
+                                    fullStar={require('../../data/img/icon_selected.png')}
+                                    starStyle={{width: 14, height: 14}}
+                                    selectedStar={(rating)=>{}}/>
+                                <Text style={styles.flat_item_rating_number} numberOfLines={1}>{item.rating.average}</Text>
+                            </View>
+                        </View>
+                    </View>
+                </TouchableView>
+            </View>
+        )
+    }
+
+    _refreshControlView() {
+        return (
+            <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={() => this._refresh()}
+                colors={['#ff0000', '#00ff00', '#0000ff']}
+            />
+        )
+    }
+
+    _refresh() {
+        this.setState({
+            refreshing: true
+        })
+        this.requestData()
+    }
+
+    _getItemLayout(data, index) {
+        return {length: itemHight,offset: itemHight*index,index}
+    }
+
+    getHotMovieDatas (isBanner) {
+        let items = [];
+        let movieDatas = this.state.hotMovies.subjects;
+        if (movieDatas != null && movieDatas.length>4) {
+            if (isBanner) {
+                for (let i = 0; i < 4; i++) {
+                    items.push(movieDatas[i]);
+                }
+            } else {
+                for (let i = 4; i < movieDatas.length; i++) {
+                    items.push(movieDatas[i]);
+                }
+            }
+        }
+        return items;
     }
 
     render() {
         return (
             <View style={styles.container}>
-                {/*状态栏*/}
-                <StatusBar
-                    animated = {true}
-                    backgroundColor = {MainColor}
-                    barStyle = 'light-content'
-                />
-                {/*搜索栏*/}
-                <View style={styles.search_view}>
-                    <Text style={styles.search_text}>{App_Name}</Text>
-                    <TouchableView
-                        onPress={()=>{
-                            show("搜索")
-                        }}
-                    >
-                        <Image
-                            source={require('../../data/img/icon_search.png')}
-                            style={[BaseStyles.baseIcon,styles.search_icon]}
-                            tintColor={WhiteTextColor}
-                        />
-                    </TouchableView>
-                </View>
-                {/*banner栏*/}
-                <View style={styles.swiper}>
-                    <Swiper
-                        height={220}
-                        autoplay={true}
-                        autoplayTimeout={4}
-                        dot = {<View style={styles.swiper_dot}/>}
-                        activeDot = {<View style={styles.swiper_activeDot}/>}
-                        paginationStyle={styles.swiper_pagination}>
-                        {this.swiperChildrenView()}
-                    </Swiper>
-                </View>
-                {/*分类栏*/}
-                <View style={styles.cate_view}>
-                    {this.cateChildrenView()}
-                </View>
+                    {/*状态栏*/}
+                    <StatusBar
+                        animated = {true}
+                        backgroundColor = {MainColor}
+                        barStyle = 'light-content'
+                    />
+                    {/*搜索栏*/}
+                    <View style={styles.search_view}>
+                        <Text style={styles.search_text}>{App_Name}</Text>
+                        <TouchableView
+                            onPress={()=>{
+                                show("搜索")
+                            }}
+                        >
+                            <Image
+                                source={require('../../data/img/icon_search.png')}
+                                style={[BaseStyles.baseIcon,styles.search_icon]}
+                                tintColor={WhiteTextColor}
+                            />
+                        </TouchableView>
+                    </View>
+                    <ScrollView style={styles.scrollview_container}
+                                showsVerticalScrollIndicator={false}
+                                refreshControl={this._refreshControlView()}>
+                        {/*banner栏*/}
+                        <View style={styles.middle_view}>
+                            <View style={styles.swiper}>
+                                <Swiper
+                                    height={220}
+                                    autoplay={true}
+                                    autoplayTimeout={4}
+                                    dot = {<View style={styles.swiper_dot}/>}
+                                    activeDot = {<View style={styles.swiper_activeDot}/>}
+                                    paginationStyle={styles.swiper_pagination}>
+                                    {this._swiperChildrenView()}
+                                </Swiper>
+                            </View>
+                            {/*分类栏*/}
+                            <View style={styles.cate_view}>
+                                {this._cateChildrenView()}
+                            </View>
+                        </View>
+                        {/*列表*/}
+                        <View style={styles.flat_view}>
+                            <FlatList
+                                data = {this.getHotMovieDatas(false)}
+                                keyExtractor={(item,index)=>index}
+                                renderItem={
+                                    ({item}) => this._renderItemView(item)
+                                }
+                                getItemLayout={(data,index)=> this._getItemLayout(data,index)}
+                                showsVerticalScrollIndicator={false}
+                                showV
+                                numColumns={3}
+                            />
+                        </View>
+                    </ScrollView>
             </View>
         )
     }
@@ -217,6 +315,15 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
     },
+    scrollview_container: {
+        flex: 1,
+    },
+    middle_view: {
+        backgroundColor: WhiteTextColor,
+        paddingBottom: 10,
+        borderBottomLeftRadius:4,
+        borderBottomRightRadius:4,
+    },
     swiper: {
         height: 220,
     },
@@ -229,7 +336,7 @@ const styles = StyleSheet.create({
         marginRight: 2,
     },
     swiper_activeDot: {
-        backgroundColor: MainColor,
+        backgroundColor: WhiteTextColor,
         width: 16,
         height: 2,
         borderRadius: 1,
@@ -243,7 +350,7 @@ const styles = StyleSheet.create({
     swiper_children_view: {
         height: 200,
         flexDirection: 'row',
-        backgroundColor: MikeWhiteColor,
+        backgroundColor: MainColor,
         alignItems: 'center',
         margin :10,
         paddingLeft:10,
@@ -263,6 +370,7 @@ const styles = StyleSheet.create({
     swiper_children_title: {
         fontSize: 18,
         marginBottom: 10,
+        color: WhiteTextColor
     },
     swiper_children_director: {
         flexDirection: 'row',
@@ -277,6 +385,7 @@ const styles = StyleSheet.create({
     },
     swiper_children_director_name: {
         fontSize: 14,
+        color: GrayWhiteColor
     },
     swiper_children_casts_view: {
         width: width-190,
@@ -285,6 +394,7 @@ const styles = StyleSheet.create({
     swiper_children_casts_text: {
         fontSize:14,
         flexWrap: 'wrap',
+        color: GrayWhiteColor
     },
     swiper_children_rating_view: {
         flexDirection: 'row',
@@ -304,36 +414,90 @@ const styles = StyleSheet.create({
     swiper_children_genres_text: {
         fontSize:14,
         flexWrap: 'wrap',
+        color: GrayWhiteColor,
     },
     cate_view: {
-        height: 100,
+        height: 72,
         flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginLeft:10,
-        marginRight:10,
+        backgroundColor: MainColor,
+        marginLeft: 10,
+        marginRight: 10,
+        borderRadius: 4,
     },
     cate_children_touchview: {
-        width: width/2-20,
-        height: 42,
-        marginBottom: 8,
-        marginLeft: 5,
-        marginRight: 5,
+        width: (width-20)/4,
+        height: 72,
+    },
+    cate_children_view: {
+        width: (width-20)/4,
+        height: 72,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     cate_children_linear: {
-        width: width/2-20,
+        width: 42,
         height: 42,
-        borderRadius: 4,
-        flexDirection: 'row',
+        borderRadius: 26,
+        marginBottom:4,
         alignItems: 'center',
         justifyContent: 'center',
     },
     cate_children_image: {
         width: 26,
         height: 26,
-        marginRight: 12,
     },
     cate_children_text: {
-        fontSize: 18,
+        fontSize: 14,
         color: WhiteTextColor,
+    },
+    flat_view: {
+        flex: 1,
+        marginLeft:5,
+        marginRight:5,
+        backgroundColor: GrayWhiteColor,
+    },
+    flat_item: {
+        height: itemHight,
+        width:(width-10)/3,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    flat_item_touchableview: {
+        height: itemHight-16,
+    },
+    flat_item_view: {
+        height: itemHight-16,
+        alignItems: 'center',
+        backgroundColor: MainColor,
+        borderRadius: 4,
+    },
+    flat_item_image: {
+        width: (width-10)/3-10,
+        height:itemHight-26,
+        borderRadius: 4,
+    },
+    flat_item_detail: {
+        width: (width-10)/3-10,
+        position: 'absolute',
+        bottom: 0,
+        alignItems: 'center',
+        padding: 2,
+        backgroundColor: MainColor,
+        borderBottomRightRadius:4,
+        borderBottomLeftRadius:4,
+    },
+    flat_item_title: {
+        fontSize: 14,
+        color: WhiteTextColor,
+    },
+    flat_item_rating_view: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    flat_item_rating_number: {
+        fontSize: 12,
+        color: '#ffcc33',
+        fontWeight: '500',
+        marginLeft: 4,
     },
 })
