@@ -11,41 +11,38 @@ const Movie_Hoting_Url = "/movie/in_theaters"
 export default class HttpMovieManager {
 
     /*正在热映*/
-    getHottingMovie() {
-
-        let movies = queryMovie();
-        if (movies != null && movies.length>0) {
-            return new Promise((resolve,reject)=>{
-                console.log("本来数据:"+movies);
-                resolve(movies[0])
-            })
-        } else {
-            return new Promise((resolve,reject) => {
-                this.fetchNetData(BaseUrl+Movie_Hoting_Url)
-                    .then((data)=>{
-                        if (data != null) {
-                            if (data.code != null && data.code instanceof Number) {
-                                reject(ErrorAnayle.getErrorBean(data.code))
-                            } else if (data.count != null && data.count>0){
-                                resolve(data)
-                                console.log(data);
-                                insertMovie(data)
-                            } else {
-                                reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
-                            }
+    getHottingMovie(isInit,start,count) {
+        if (!isInit) {
+            let movies = queryMovie();
+            if (movies != null && movies.length>0) {
+                return new Promise((resolve,reject)=>{
+                    resolve(movies[movies.length-1])
+                })
+            }
+        }
+        return new Promise((resolve,reject) => {
+            this.fetchNetData(BaseUrl+Movie_Hoting_Url+"?start="+start+"&count="+count)
+                .then((data)=>{
+                    if (data != null) {
+                        if (data.code != null && data.code instanceof Number) {
+                            reject(ErrorAnayle.getErrorBean(data.code))
+                        } else if (data.count != null && data.count>0){
+                            resolve(data)
+                            insertMovie(data)
                         } else {
                             reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
                         }
-                    }).catch((error)=>{
-                    if (error != null && error instanceof ErrorBean) {
-                        reject(error)
                     } else {
                         reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
                     }
-                })
+                }).catch((error)=>{
+                if (error != null && error instanceof ErrorBean) {
+                    reject(error)
+                } else {
+                    reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                }
             })
-        }
-
+        })
     }
 
     /*请求数据=本地加网络*/

@@ -18,17 +18,16 @@ const SubjectSchema = {
     name: 'Subject',
     properties: {
         rating: 'Rating',
-        genres: {type:'list',objectType: 'string'},
         title: 'string',
         casts: {type: 'list',objectType: 'Casts'},
         collect_count: 'int',
         original_title: 'string',
         subtype: 'string',
         directors: {type:'list',objectType: 'Directors'},
-        year: 'int',
+        year: 'string',
         images: 'Images',
         alt: 'string',
-        id: 'int'
+        id: 'string'
     }
 }
 
@@ -46,9 +45,9 @@ const CastsSchema = {
     name: 'Casts',
     properties: {
         alt: 'string',
-        avatars:{type: 'list',objectType:'Images'},
+        avatars:'Images',
         name: 'string',
-        id: 'int',
+        id: 'string',
     }
 }
 
@@ -56,9 +55,9 @@ const DirectorsSchema = {
     name: 'Directors',
     properties: {
         alt: 'string',
-        avatars:{type: 'list',objectType:'Images'},
+        avatars:'Images',
         name: 'string',
-        id: 'int',
+        id: 'string',
     }
 }
 

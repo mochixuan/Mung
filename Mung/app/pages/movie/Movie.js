@@ -21,25 +21,48 @@ import StarRating from 'react-native-star-rating'
 import LinearGradient from 'react-native-linear-gradient'
 
 const itemHight = 200;
+const moviesCount = 20;
 
 export default class Movie extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            hotMovies:[],
-            refreshing: false,
+            hotMovies:{},
+            refreshing: true,
+            isInit: false,
         }
         this.HttpMovies  = new HttpMovieManager();
         this.requestData();
     }
 
     requestData() {
-        this.HttpMovies.getHottingMovie()
+        let start = 0;
+        if (this.state.hotMovies.start != null) {
+            start = this.state.hotMovies.start+1;
+            if (this.state.hotMovies.total == this.state.hotMovies.start) {
+                this.setState({
+                    refreshing: false,
+                })
+                show("已是最新数据")
+                return;
+            }
+        }
+
+        this.HttpMovies.getHottingMovie(this.state.isInit,start,moviesCount)
             .then((movies)=>{
+                let preSubjects = this.state.hotMovies.subjects;
+                if (preSubjects != null && preSubjects.length>0) {
+                    preSubjects.filter((item,i)=>{
+                        return i<moviesCount;
+                    }).forEach((item,i)=>{
+                        movies.subjects.push(item)
+                    })
+                }
                 this.setState({
                     hotMovies:movies,
                     refreshing: false,
+                    isInit: true,
                 })
             })
             .catch((error)=>{
@@ -89,7 +112,7 @@ export default class Movie extends Component {
                             </View>
                             <View style={styles.swiper_children_genres_view}
                                   numberOfLines={2}>
-                                <Text style={styles.swiper_children_genres_text}>{item.genres.join(" ")}</Text>
+                                <Text style={styles.swiper_children_genres_text}>{item.collect_count} 看过</Text>
                             </View>
                             <View style={styles.swiper_children_rating_view}>
                                 <StarRating
@@ -102,7 +125,7 @@ export default class Movie extends Component {
                                     fullStar={require('../../data/img/icon_selected.png')}
                                     starStyle={{width: 20, height: 20}}
                                     selectedStar={(rating)=>{}}/>
-                                <Text style={styles.swiper_children_rating_text}>{item.rating.average}</Text>
+                                <Text style={styles.swiper_children_rating_text}>{item.rating.average.toFixed(1)}</Text>
                             </View>
                         </View>
                     </View>
@@ -177,7 +200,7 @@ export default class Movie extends Component {
                                     fullStar={require('../../data/img/icon_selected.png')}
                                     starStyle={{width: 14, height: 14}}
                                     selectedStar={(rating)=>{}}/>
-                                <Text style={styles.flat_item_rating_number} numberOfLines={1}>{item.rating.average}</Text>
+                                <Text style={styles.flat_item_rating_number} numberOfLines={1}>{item.rating.average.toFixed(1)}</Text>
                             </View>
                         </View>
                     </View>
@@ -201,6 +224,51 @@ export default class Movie extends Component {
             refreshing: true
         })
         this.requestData()
+    }
+
+    _getContentView() {
+        if (this.state.isInit) {
+            return (
+                <View style={styles.content_view}>
+                    {/*banner栏*/}
+                    <View style={styles.middle_view}>
+                        <View style={styles.swiper}>
+                            <Swiper
+                                height={220}
+                                autoplay={true}
+                                autoplayTimeout={4}
+                                dot = {<View style={styles.swiper_dot}/>}
+                                activeDot = {<View style={styles.swiper_activeDot}/>}
+                                paginationStyle={styles.swiper_pagination}>
+                                {this._swiperChildrenView()}
+                            </Swiper>
+                        </View>
+                        {/*分类栏*/}
+                        <View style={styles.cate_view}>
+                            {this._cateChildrenView()}
+                        </View>
+                    </View>
+                    {/*列表*/}
+                    <View style={styles.flat_view}>
+                        <FlatList
+                            data = {this.getHotMovieDatas(false)}
+                            keyExtractor={(item,index)=>index}
+                            renderItem={
+                                ({item}) => this._renderItemView(item)
+                            }
+                            getItemLayout={(data,index)=> this._getItemLayout(data,index)}
+                            showsVerticalScrollIndicator={false}
+                            showV
+                            numColumns={3}
+                        />
+                    </View>
+                </View>
+            )
+        } else {
+            <View style={styles.content_view}>
+
+            </View>
+        }
     }
 
     _getItemLayout(data, index) {
@@ -251,38 +319,7 @@ export default class Movie extends Component {
                     <ScrollView style={styles.scrollview_container}
                                 showsVerticalScrollIndicator={false}
                                 refreshControl={this._refreshControlView()}>
-                        {/*banner栏*/}
-                        <View style={styles.middle_view}>
-                            <View style={styles.swiper}>
-                                <Swiper
-                                    height={220}
-                                    autoplay={true}
-                                    autoplayTimeout={4}
-                                    dot = {<View style={styles.swiper_dot}/>}
-                                    activeDot = {<View style={styles.swiper_activeDot}/>}
-                                    paginationStyle={styles.swiper_pagination}>
-                                    {this._swiperChildrenView()}
-                                </Swiper>
-                            </View>
-                            {/*分类栏*/}
-                            <View style={styles.cate_view}>
-                                {this._cateChildrenView()}
-                            </View>
-                        </View>
-                        {/*列表*/}
-                        <View style={styles.flat_view}>
-                            <FlatList
-                                data = {this.getHotMovieDatas(false)}
-                                keyExtractor={(item,index)=>index}
-                                renderItem={
-                                    ({item}) => this._renderItemView(item)
-                                }
-                                getItemLayout={(data,index)=> this._getItemLayout(data,index)}
-                                showsVerticalScrollIndicator={false}
-                                showV
-                                numColumns={3}
-                            />
-                        </View>
+                        {this._getContentView()}
                     </ScrollView>
             </View>
         )
@@ -316,6 +353,9 @@ const styles = StyleSheet.create({
         right: 0,
     },
     scrollview_container: {
+        flex: 1,
+    },
+    content_view: {
         flex: 1,
     },
     middle_view: {

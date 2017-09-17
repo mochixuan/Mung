@@ -5,7 +5,7 @@ let realm = new Realm(Migrations[Migrations.length-1])
 
 /*-------------Movies--------------*/
 
-const insertMovie = (movie) => {
+let insertMovie = (movie) => {
     try {
         realm.write(()=>{
             realm.create('Movie',movie);
@@ -15,14 +15,8 @@ const insertMovie = (movie) => {
     }
 }
 
-const queryMovie = ()=>{
-    let movies = [];
-    try {
-        movies = realm.objects('Movie');
-    } catch (error) {
-        console.log("queryStudent",error);
-    }
-    return movies;
+let queryMovie = ()=>{
+    return realm.objects('Movie');
 }
 
 const deleteMovie = () => {
