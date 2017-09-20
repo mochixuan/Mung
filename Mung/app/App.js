@@ -3,8 +3,9 @@ import {
     TabNavigator
 } from 'react-navigation'
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator'
-import Movie from './pages/movie/Movie'
-import {MainBg,MainColor,GrayColor} from './pages/base/BaseStyle'
+import Movie from './pages/Movie'
+import MovieDetail from './pages/MovieDetail'
+import {MainBg,MainColor,GrayColor} from './pages/basestyle/BaseStyle'
 
 /*
 * 实现底部Tab
@@ -44,12 +45,13 @@ const MainTabPage = TabNavigator({
 * */
 const App = StackNavigator({
     //MainTabPage: {screen:MainTabPage},
-    Movie: {screen:Movie}
+    Movie: {screen:Movie},
+    MovieDetail:{screen:MovieDetail},
 },{
     navigationOptions: {
-        gesturesEnabled: true
+        gesturesEnabled: true,
     },
-    headerMode: 'none',
+    headerMode: 'float',
     transitionConfig:()=>{
         screenInterpolator: CardStackStyleInterpolator.forHorizontal
     }

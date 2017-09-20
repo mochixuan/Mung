@@ -9,14 +9,14 @@ import {
     ScrollView,
     RefreshControl,
 } from 'react-native'
-import {MainBg, MainColor,MikeWhiteColor, BaseStyles, WhiteTextColor, GrayWhiteColor,Translucent, BlackTextColor,GrayColor} from '../base/BaseStyle'
+import {MainBg, MainColor,MikeWhiteColor, BaseStyles, WhiteTextColor, GrayWhiteColor,Translucent, BlackTextColor,GrayColor} from './basestyle/BaseStyle'
 import Swiper from 'react-native-swiper'
-import {show} from '../../utils/ToastUtils'
-import {width} from '../../utils/Utils'
-import {App_Name,Cate_Data} from '../../data/constant/BaseContant'
+import {show} from '../utils/ToastUtils'
+import {width,jumpPager} from '../utils/Utils'
+import {App_Name,Cate_Data} from '../data/constant/BaseContant'
 import TouchableView from '../widget/TouchableView'
-import ErrorBean from '../../data/http/ErrorBean'
-import HttpMovieManager from '../../data/http/HttpMovieManager'
+import ErrorBean from '../data/http/ErrorBean'
+import HttpMovieManager from '../data/http/HttpMovieManager'
 import StarRating from 'react-native-star-rating'
 import LinearGradient from 'react-native-linear-gradient'
 
@@ -24,6 +24,41 @@ const itemHight = 200;
 const moviesCount = 20;
 
 export default class Movie extends Component {
+
+    static navigationOptions = ({ navigation }) =>({
+        headerTitle: 'Mung',
+        headerTitleStyle: {
+            color: WhiteTextColor,
+            alignSelf: 'center',
+        },
+        headerStyle: {
+            backgroundColor: MainColor,
+        },
+        headerLeft:(
+            <View
+                style={{
+                    width:26,
+                    height:26
+                }}
+            />
+        ),
+        headerRight: (
+            <TouchableView
+                onPress={()=>{
+                    jumpPager(navigation.navigate,"MovieDetail",null)
+                }}>
+                <Image
+                    source={require('../data/img/icon_search.png')}
+                    style={{
+                        width:26,
+                        height:26,
+                        alignSelf: 'center',
+                        marginRight: 20,
+                    }}
+                    tintColor={WhiteTextColor}
+                />
+        </TouchableView>)
+    })
 
     constructor(props) {
         super(props)
@@ -120,9 +155,9 @@ export default class Movie extends Component {
                                     rating={item.rating.average/2}
                                     maxStars={5}
                                     halfStarEnabled={true}
-                                    emptyStar={require('../../data/img/icon_unselect.png')}
-                                    halfStar={require('../../data/img/icon_half_select.png')}
-                                    fullStar={require('../../data/img/icon_selected.png')}
+                                    emptyStar={require('../data/img/icon_unselect.png')}
+                                    halfStar={require('../data/img/icon_half_select.png')}
+                                    fullStar={require('../data/img/icon_selected.png')}
                                     starStyle={{width: 20, height: 20}}
                                     selectedStar={(rating)=>{}}/>
                                 <Text style={styles.swiper_children_rating_text}>{item.rating.average.toFixed(1)}</Text>
@@ -135,7 +170,7 @@ export default class Movie extends Component {
             return (
                 <Image
                     resizeMode='cover'
-                    source={require('../../data/img/icon_search.png')}
+                    source={require('../data/img/icon_search.png')}
                     style={{
                         height: 240,
                         width:width,
@@ -195,9 +230,9 @@ export default class Movie extends Component {
                                     rating={item.rating.average/2}
                                     maxStars={5}
                                     halfStarEnabled={true}
-                                    emptyStar={require('../../data/img/icon_unselect.png')}
-                                    halfStar={require('../../data/img/icon_half_select.png')}
-                                    fullStar={require('../../data/img/icon_selected.png')}
+                                    emptyStar={require('../data/img/icon_unselect.png')}
+                                    halfStar={require('../data/img/icon_half_select.png')}
+                                    fullStar={require('../data/img/icon_selected.png')}
                                     starStyle={{width: 14, height: 14}}
                                     selectedStar={(rating)=>{}}/>
                                 <Text style={styles.flat_item_rating_number} numberOfLines={1}>{item.rating.average.toFixed(1)}</Text>
@@ -265,9 +300,7 @@ export default class Movie extends Component {
                 </View>
             )
         } else {
-            <View style={styles.content_view}>
-
-            </View>
+            <View style={styles.content_view}/>
         }
     }
 
@@ -301,21 +334,6 @@ export default class Movie extends Component {
                         backgroundColor = {MainColor}
                         barStyle = 'light-content'
                     />
-                    {/*搜索栏*/}
-                    <View style={styles.search_view}>
-                        <Text style={styles.search_text}>{App_Name}</Text>
-                        <TouchableView
-                            onPress={()=>{
-                                show("搜索")
-                            }}
-                        >
-                            <Image
-                                source={require('../../data/img/icon_search.png')}
-                                style={[BaseStyles.baseIcon,styles.search_icon]}
-                                tintColor={WhiteTextColor}
-                            />
-                        </TouchableView>
-                    </View>
                     <ScrollView style={styles.scrollview_container}
                                 showsVerticalScrollIndicator={false}
                                 refreshControl={this._refreshControlView()}>
@@ -331,26 +349,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: MainBg
-    },
-    search_view: {
-        height: 54,
-        width:width,
-        backgroundColor: MainColor,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent:'center',
-    },
-    search_text: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: WhiteTextColor,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    search_icon: {
-        marginRight: 20,
-        position: 'absolute',
-        right: 0,
     },
     scrollview_container: {
         flex: 1,

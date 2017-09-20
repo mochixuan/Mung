@@ -22,4 +22,12 @@ const TabOptions = (labal,icon)=>{
     })
 }
 
-export {TabOptions,width,height}
+const jumpPager = (navigate,page,params) => {
+    if (params != null) {
+        navigate(page,params)
+    } else {
+        navigate(page)
+    }
+}
+
+export {TabOptions,jumpPager,width,height}

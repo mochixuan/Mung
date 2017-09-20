@@ -3,7 +3,7 @@ import React,{Component} from 'react'
 import {
     TouchableHighlight,
     TouchableNativeFeedback,
-    Platform
+    Platform,
 } from 'react-native'
 
 export default class TouchableView extends Component {
