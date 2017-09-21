@@ -47,7 +47,7 @@ export default class Movie extends Component {
         headerRight: (
             <TouchableOpacity
                 onPress={()=>{
-                    jumpPager(navigation.navigate,"MovieDetail",null)
+                    //jumpPager(navigation.navigate,"MovieDetail",null)
                 }}>
                 <Image
                     source={require('../data/img/icon_search.png')}
@@ -119,53 +119,58 @@ export default class Movie extends Component {
         if (items != null && items.length>0) {
             return items.map((item,i)=>{
                 return (
-                    <View
+                    <TouchableView
                         key={i}
-                        style={styles.swiper_children_view}>
-                        <Image
-                            style={styles.swiper_children_cover}
-                            source={{uri:item.images.large}}/>
-                        <View style={styles.swiper_children_right}>
-                            <Text style={styles.swiper_children_title}
-                                  numberOfLines={1}>
-                                {item.title}
-                            </Text>
-                            <View style={styles.swiper_children_director}>
-                                <Image
-                                    source={{uri:item.directors[0].avatars.small}}
-                                    style={styles.swiper_children_director_img}
-                                />
-                                <Text style={styles.swiper_children_director_name}
-                                    numberOfLines={1}>
-                                    {item.directors[0].name}
+                        onPress={()=>{
+                        jumpPager(this.props.navigation.navigate,'MovieDetail',item)
+                    }}>
+                        <View
+                            style={styles.swiper_children_view}>
+                            <Image
+                                style={styles.swiper_children_cover}
+                                source={{uri:item.images.large}}/>
+                            <View style={styles.swiper_children_right}>
+                                <Text style={styles.swiper_children_title}
+                                      numberOfLines={1}>
+                                    {item.title}
                                 </Text>
-                            </View>
-                            <View style={styles.swiper_children_casts_view}>
-                                <Text
-                                    style={styles.swiper_children_casts_text}
-                                    numberOfLines={2}>
-                                    主演: {item.casts.map((data,i)=>data.name).join(' ')}
-                                </Text>
-                            </View>
-                            <View style={styles.swiper_children_genres_view}
-                                  numberOfLines={2}>
-                                <Text style={styles.swiper_children_genres_text}>{item.collect_count} 看过</Text>
-                            </View>
-                            <View style={styles.swiper_children_rating_view}>
-                                <StarRating
-                                    disabled={false}
-                                    rating={item.rating.average/2}
-                                    maxStars={5}
-                                    halfStarEnabled={true}
-                                    emptyStar={require('../data/img/icon_unselect.png')}
-                                    halfStar={require('../data/img/icon_half_select.png')}
-                                    fullStar={require('../data/img/icon_selected.png')}
-                                    starStyle={{width: 20, height: 20}}
-                                    selectedStar={(rating)=>{}}/>
-                                <Text style={styles.swiper_children_rating_text}>{item.rating.average.toFixed(1)}</Text>
+                                <View style={styles.swiper_children_director}>
+                                    <Image
+                                        source={{uri:item.directors[0].avatars.small}}
+                                        style={styles.swiper_children_director_img}
+                                    />
+                                    <Text style={styles.swiper_children_director_name}
+                                          numberOfLines={1}>
+                                        {item.directors[0].name}
+                                    </Text>
+                                </View>
+                                <View style={styles.swiper_children_casts_view}>
+                                    <Text
+                                        style={styles.swiper_children_casts_text}
+                                        numberOfLines={2}>
+                                        主演: {item.casts.map((data,i)=>data.name).join(' ')}
+                                    </Text>
+                                </View>
+                                <View style={styles.swiper_children_genres_view}
+                                      numberOfLines={2}>
+                                    <Text style={styles.swiper_children_genres_text}>{item.collect_count} 看过</Text>
+                                </View>
+                                <View style={styles.swiper_children_rating_view}>
+                                    <StarRating
+                                        disabled={false}
+                                        rating={item.rating.average/2}
+                                        maxStars={5}
+                                        halfStarEnabled={true}
+                                        emptyStar={require('../data/img/icon_unselect.png')}
+                                        halfStar={require('../data/img/icon_half_select.png')}
+                                        fullStar={require('../data/img/icon_selected.png')}
+                                        starStyle={{width: 20, height: 20}}
+                                        selectedStar={(rating)=>{}}/>
+                                    <Text style={styles.swiper_children_rating_text}>{item.rating.average.toFixed(1)}</Text>
+                                </View>
                             </View>
                         </View>
-                    </View>
+                    </TouchableView>
                 )
             })
         } else {
@@ -216,7 +221,9 @@ export default class Movie extends Component {
             <View style={styles.flat_item}>
                 <TouchableView
                     style={styles.flat_item_touchableview}
-                    onPress={()=>show(item.title)}>
+                    onPress={()=>{
+                        jumpPager(this.props.navigation.navigate,'MovieDetail',item)
+                    }}>
                     <View style={styles.flat_item_view}>
                         <Image
                             source={{uri:item.images.large}}

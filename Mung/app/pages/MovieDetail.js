@@ -3,7 +3,7 @@ import {
     View,
     Text,
     Image,
-    TouchableHighlight,
+    TouchableOpacity,
     ScrollView,
 } from 'react-native'
 import {MainBg, MainColor,MikeWhiteColor, BaseStyles, WhiteTextColor, GrayWhiteColor,Translucent, BlackTextColor,GrayColor} from './basestyle/BaseStyle'
@@ -17,6 +17,26 @@ export default class MovieDetail extends Component {
         header:null
     }
 
+    _getParallaxLeftView() {
+        return (<TouchableOpacity onPress={()=>{
+                    this.props.navigation.goBack()
+                }}>
+                <Image
+                    style={{
+                        width: 26,
+                        height:26,
+                    }}
+                    source={require('../data/img/icon_back.png')}/>
+            </TouchableOpacity>)
+    }
+
+    _getParallaxHeaderView() {
+        return (
+            <View></View>
+        )
+    }
+
+
     render() {
         return (
             <ParallaxScrollView
@@ -25,35 +45,10 @@ export default class MovieDetail extends Component {
                 navBarTitle="Mung"
                 navBarColor={MainColor}
                 navBarTitleColor={BlackTextColor}
-                leftView={
-                    <TouchableHighlight
-                        onPress={()=>{
-
-                    }}>
-                        <Image
-                            source={{
-                                uri: 'http://gaopin-preview.bj.bcebos.com/133108772254.jpg',
-                                width: 26,
-                                header:26,
-                            }}
-                        />
-                    </TouchableHighlight>
-                }
-                rightIcon={
-                    <TouchableHighlight onPress={()=>{
-
-                    }}>
-                        <Image
-                            source={{
-                                uri: 'http://gaopin-preview.bj.bcebos.com/133108772254.jpg',
-                                width: 26,
-                                header:26,
-                            }}
-                        />
-                    </TouchableHighlight>
-                }
+                leftView={this._getParallaxLeftView()}
+                headerView={this._getParallaxHeaderView()}
             >
-                <ScrollView >
+                <ScrollView style={styles.container}>
                     <View style={{
                         height:1000,
                         backgroundColor:BlackTextColor

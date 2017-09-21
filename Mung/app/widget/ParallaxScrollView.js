@@ -124,7 +124,7 @@ export default class ParallaxScrollView extends Component {
                     flexDirection: 'row',
                     backgroundColor: scrollY.interpolate({
                         //inputRange: [-windowHeight, windowHeight * DEFAULT_WINDOW_MULTIPLIER, windowHeight * 0.8],
-                        inputRange: [0 ,windowHeight-DEFAULT_NAVBAR_HEIGHT,windowHeight],
+                        inputRange: [0 ,windowHeight,windowHeight],
                         outputRange: ['transparent',navBarColor,navBarColor]
                     })
                 }}
@@ -209,7 +209,7 @@ ParallaxScrollView.propTypes = {
     userTitle: React.PropTypes.string,
     headerView: React.PropTypes.node,
     leftView: React.PropTypes.element,
-    rightIcon: React.PropTypes.element
+    rightView: React.PropTypes.element
 };
 
 var styles = StyleSheet.create({
