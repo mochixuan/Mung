@@ -8,6 +8,7 @@ import {
     FlatList,
     ScrollView,
     RefreshControl,
+    TouchableOpacity,
 } from 'react-native'
 import {MainBg, MainColor,MikeWhiteColor, BaseStyles, WhiteTextColor, GrayWhiteColor,Translucent, BlackTextColor,GrayColor} from './basestyle/BaseStyle'
 import Swiper from 'react-native-swiper'
@@ -34,6 +35,7 @@ export default class Movie extends Component {
         headerStyle: {
             backgroundColor: MainColor,
         },
+        headerTintColor : 'red',
         headerLeft:(
             <View
                 style={{
@@ -43,7 +45,7 @@ export default class Movie extends Component {
             />
         ),
         headerRight: (
-            <TouchableView
+            <TouchableOpacity
                 onPress={()=>{
                     jumpPager(navigation.navigate,"MovieDetail",null)
                 }}>
@@ -57,7 +59,7 @@ export default class Movie extends Component {
                     }}
                     tintColor={WhiteTextColor}
                 />
-        </TouchableView>)
+        </TouchableOpacity>)
     })
 
     constructor(props) {

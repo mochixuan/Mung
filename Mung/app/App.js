@@ -51,7 +51,7 @@ const App = StackNavigator({
     navigationOptions: {
         gesturesEnabled: true,
     },
-    headerMode: 'float',
+    headerMode: 'screen',
     transitionConfig:()=>{
         screenInterpolator: CardStackStyleInterpolator.forHorizontal
     }
