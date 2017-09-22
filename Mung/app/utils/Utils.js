@@ -24,7 +24,9 @@ const TabOptions = (labal,icon)=>{
 
 const jumpPager = (navigate,page,params) => {
     if (params != null) {
-        navigate(page,params)
+        navigate(page,{
+            data:params
+        })
     } else {
         navigate(page)
     }

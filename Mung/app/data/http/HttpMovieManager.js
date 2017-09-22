@@ -1,12 +1,17 @@
 
 import {Nuknown_Error, NetWork_Request_Error, ErrorAnayle} from './ErrorAnayle'
-import {ErrorBean} from "./ErrorBean";
+import ErrorBean from "./ErrorBean";
 import {insertMovie,queryMovie,deleteMovie} from '../realm/RealmManager'
+import React from 'react'
 
 /*基础链接头*/
 const BaseUrl = "https://api.douban.com/v2"
 /*正在热映*/
 const Movie_Hoting_Url = "/movie/in_theaters"
+/*电影条目信息*/
+const Movie_Detail_Url = '/movie/subject/'
+/*apikey*/
+const DouBan_ApiKey='0df993c66c0c636e29ecbb5344252a4a';
 
 export default class HttpMovieManager {
 
@@ -24,7 +29,7 @@ export default class HttpMovieManager {
             this.fetchNetData(BaseUrl+Movie_Hoting_Url+"?start="+start+"&count="+count)
                 .then((data)=>{
                     if (data != null) {
-                        if (data.code != null && data.code instanceof Number) {
+                        if (data.code != null && typeof data.code == 'number') {
                             reject(ErrorAnayle.getErrorBean(data.code))
                         } else if (data.count != null && data.count>0){
                             resolve(data)
@@ -36,12 +41,33 @@ export default class HttpMovieManager {
                         reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
                     }
                 }).catch((error)=>{
-                if (error != null && error instanceof ErrorBean) {
-                    reject(error)
-                } else {
-                    reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
-                }
+                    if (error != null && error instanceof ErrorBean) {
+                        reject(error)
+                    } else {
+                        reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                    }
             })
+        })
+    }
+
+    /*电影条目详情*/
+    getMovieDetail(id) {
+        return new Promise((resolve,reject) =>{
+            this.fetchNetData(BaseUrl+Movie_Detail_Url+id)
+                .then((data)=>{
+                    if (data != null && data.id != null) {
+                        resolve(data)
+                    } else {
+                        reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                    }
+                })
+                .catch((error)=>{
+                    if (error != null && error instanceof ErrorBean) {
+                        reject(error)
+                    } else {
+                        reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                    }
+                })
         })
     }
 

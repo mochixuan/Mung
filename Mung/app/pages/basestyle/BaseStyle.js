@@ -1,7 +1,8 @@
 import {StyleSheet} from 'react-native'
 
 const MainColor = '#937eff'
-const GrayColor = '#666666'
+const GrayColor = '#9D9D9D'
+const GrayBlackColor = '#666666'
 const White = '#ffffff'
 const Translucent = 'rgba(125,125,125,0.6)'
 const MainBg = '#f5f5f5'
@@ -29,6 +30,7 @@ export {
     MainBg,
     MainColor,
     GrayColor,
+    GrayBlackColor,
     Translucent,
     White,
     GrayWhiteColor,

@@ -10,7 +10,7 @@ import {
     RefreshControl,
     TouchableOpacity,
 } from 'react-native'
-import {MainBg, MainColor,MikeWhiteColor, BaseStyles, WhiteTextColor, GrayWhiteColor,Translucent, BlackTextColor,GrayColor} from './basestyle/BaseStyle'
+import {MainBg, MainColor, WhiteTextColor, GrayWhiteColor,Translucent} from './basestyle/BaseStyle'
 import Swiper from 'react-native-swiper'
 import {show} from '../utils/ToastUtils'
 import {width,jumpPager} from '../utils/Utils'
@@ -122,7 +122,7 @@ export default class Movie extends Component {
                     <TouchableView
                         key={i}
                         onPress={()=>{
-                        jumpPager(this.props.navigation.navigate,'MovieDetail',item)
+                        jumpPager(this.props.navigation.navigate,'MovieDetail',item.id)
                     }}>
                         <View
                             style={styles.swiper_children_view}>
@@ -222,7 +222,7 @@ export default class Movie extends Component {
                 <TouchableView
                     style={styles.flat_item_touchableview}
                     onPress={()=>{
-                        jumpPager(this.props.navigation.navigate,'MovieDetail',item)
+                        jumpPager(this.props.navigation.navigate,'MovieDetail',item.id)
                     }}>
                     <View style={styles.flat_item_view}>
                         <Image

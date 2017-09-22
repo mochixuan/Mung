@@ -10,9 +10,9 @@ const INTERNAL_SERVER_ERROR = 500;  //内部错误
 
 class ErrorAnayle {
 
-    getErrorBean(code) {
-        const errorBean = new ErrorBean();
-        if (code != null && code instanceof Number) {
+    static getErrorBean(code) {
+        let errorBean = new ErrorBean();
+        if (code != null && typeof code == 'number') {
             errorBean.setErrorCode(code);
             switch (code) {
                 case Nuknown_Error:
