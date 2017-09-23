@@ -97,6 +97,32 @@ export default class HttpMovieManager {
         })
     }
 
+    /*获取短评论*/
+    getCommenaryData(id,start,count) {
+        return new Promise((resolve,reject) => {
+            this.fetchNetData(BaseUrl+Movie_Detail_Url+id+"/comments"+"?start="+start+"&count="+count+"&"+Base.name+"="+Base.value)
+                .then((data)=>{
+                    if (data != null) {
+                        if (data.code != null && typeof data.code == 'number') {
+                            reject(ErrorAnayle.getErrorBean(data.code))
+                        } else if (data.count != null && data.count>0){
+                            resolve(data)
+                        } else {
+                            reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                        }
+                    } else {
+                        reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                    }
+                }).catch((error)=>{
+                if (error != null && error instanceof ErrorBean) {
+                    reject(error)
+                } else {
+                    reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                }
+            })
+        })
+    }
+
     /*请求数据=本地加网络*/
     fetchNetData(url) {
         return new Promise((resolve,reject)=>{

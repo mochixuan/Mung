@@ -37,12 +37,14 @@ export default class MovieDetail extends Component {
             rating: 0,
             movieData: null,
             photoDatas:Default_Photos,
-            commentaryDatas:[],
+            commentaryDatas:{},
             isInitSuccess: true,
+            IsLoadingComment: true,
         }
         this.HttpMovies  = new HttpMovieManager();
         this.requestData()
         this.requestPhotos(InitPhoto_Count)
+        this.requestCommonary();
     }
 
     requestData() {
@@ -69,6 +71,40 @@ export default class MovieDetail extends Component {
                 } else {
                     show("网络错误")
                 }
+            })
+    }
+
+    requestCommonary() {
+        let start = 0
+        if (this.state.commentaryDatas.start != null) {
+            start = this.state.commentaryDatas.start+1;
+            if (start>=this.state.commentaryDatas.total) {
+                show("没有更多评论");
+                this.setState({
+                    IsLoadingComment: false,
+                })
+                return;
+            }
+        }
+        this.HttpMovies.getCommenaryData(this.props.navigation.state.params.data,start,20)
+            .then((data)=>{
+                let newDatas = data;
+                if (this.state.commentaryDatas.comments!=null) {
+                    newDatas.comments = [...this.state.commentaryDatas.comments,...data.comments];
+                }
+                this.setState({
+                    commentaryDatas:newDatas,
+                    IsLoadingComment: false,
+                })
+            }).catch((error)=>{
+                if (error != null && error instanceof ErrorBean) {
+                    show(error.getErrorMsg())
+                } else {
+                    show("网络错误")
+                }
+                this.setState({
+                    IsLoadingComment: false,
+                })
             })
     }
 
@@ -147,12 +183,75 @@ export default class MovieDetail extends Component {
         }
     }
 
-    _getCommentaryDatas(item,index) {
+    _getCommentaryItemView(item) {
         return (
-            <View>
-
+            <View style={styles.commentary_item_view}>
+                <Image
+                    source={{uri:item.author.avatar}}
+                    style={styles.commentary_item_auther_img}
+                />
+                <View>
+                    <View style={styles.commentary_item_view_top}>
+                        <View style={styles.commentary_item_view_top_left}>
+                            <Text style={styles.commentary_item_view_top_name} numberOfLines={1}>
+                                {item.author.name}
+                            </Text>
+                            <StarRating
+                                disabled={false}
+                                rating={item.rating.value}
+                                maxStars={5}
+                                halfStarEnabled={true}
+                                emptyStar={require('../data/img/icon_unselect.png')}
+                                halfStar={require('../data/img/icon_half_select.png')}
+                                fullStar={require('../data/img/icon_selected.png')}
+                                starStyle={{width: 10, height: 10}}
+                                selectedStar={(rating)=>{}}/>
+                        </View>
+                        <View style={styles.commentary_item_view_top_right}>
+                            <Image
+                                source={require('../data/img/icon_zan.png')}
+                                style={styles.commentary_item_view_top_right_img}
+                                tintColor={MainColor}
+                            />
+                            <Text style={styles.commentary_item_view_top_right_num}>{item.useful_count}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.commentary_item_view_mid}>
+                        <Text
+                            numberOfLines={6}
+                            style={styles.commentary_item_view_comment}
+                        >{item.content}</Text>
+                        <Text style={styles.commentary_item_view_time} numberOfLines={1}>{item.created_at}</Text>
+                    </View>
+                </View>
             </View>
         )
+    }
+
+    _getCommentaryItemLoadView() {
+        if (this.state.IsLoadingComment) {
+            return (
+                <TouchableOpacity onPress={()=>{show("加载中,请稍等")}}>
+                    <View style={{flexDirection:'row'}}>
+                        <ActivityIndicator
+                            style={{marginRight:6}}
+                            animating={true}
+                            color={MainColor}/>
+                        <Text style={styles.commentary_item_loadmore_text}>加载中</Text>
+                    </View>
+                </TouchableOpacity>
+            )
+        } else {
+            return (
+                <TouchableOpacity onPress={()=>{
+                    this.setState({
+                        IsLoadingComment:true,
+                    })
+                    this.requestCommonary()}}>
+                    <Text style={styles.commentary_item_loadmore_text}>加载更多评论</Text>
+                </TouchableOpacity>
+            )
+        }
     }
 
     getRatingComment() {
@@ -246,7 +345,7 @@ export default class MovieDetail extends Component {
                         <View style={styles.brief_view}>
                             <Text style={styles.brief_view_text}>简介</Text>
                             <MoreTextView
-                                numberOfLines={3}
+                                numberOfLines={4}
                                 hideText='缩小'
                                 showText='展开'
                                 textStyle={{
@@ -286,14 +385,15 @@ export default class MovieDetail extends Component {
                             </View>
                             <View style={styles.commentary_flatlist_view}>
                                 <FlatList
-                                    data={this.state.commentaryDatas}
+                                    data={this.state.commentaryDatas.comments}
                                     keyExtractor={(item, index) => index}
-                                    renderItem={({item,index})=>(this._getCommentaryDatas(item,index))}
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
+                                    renderItem={({item})=>(this._getCommentaryItemView(item))}
+                                    showsVerticalScrollIndicator={false}
                                 />
                             </View>
                         </View>
+                        {/*加载更多*/}
+                        <View style={styles.commentary_item_loadmore_view}>{this._getCommentaryItemLoadView()}</View>
                     </ScrollView>
                 </ParallaxScrollView>
             )
@@ -340,7 +440,7 @@ const styles = {
     header_image_view: {
         width: (Header_Height-DEFAULT_NAVBAR_HEIGHT)*0.64,
         height: (Header_Height-DEFAULT_NAVBAR_HEIGHT),
-        borderRadius:8,
+        borderRadius:4,
         marginBottom: DEFAULT_NAVBAR_HEIGHT/3,
         elevation:8,
         shadowRadius:8,
@@ -348,7 +448,7 @@ const styles = {
     header_image: {
         width: (Header_Height-DEFAULT_NAVBAR_HEIGHT)*0.64,
         height: (Header_Height-DEFAULT_NAVBAR_HEIGHT),
-        borderRadius:8,
+        borderRadius:4,
     },
     intro: {
         padding:16,
@@ -379,8 +479,8 @@ const styles = {
     intro_one_right: {
         width:100,
         height:100,
-        elevation:8,
-        shadowRadius:8,
+        elevation:6,
+        shadowRadius:6,
         backgroundColor: White,
         justifyContent: 'center',
         alignItems: 'center',
@@ -521,8 +621,77 @@ const styles = {
     commentary_flatlist_view: {
         flex:1,
         width:width,
-        backgroundColor:'#f00',
         paddingLeft:16,
         paddingRight:16,
+    },
+    commentary_item_loadmore_view: {
+        width:width,
+        height:56,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    commentary_item_loadmore_text: {
+        fontSize:16,
+        color:MainColor,
+    },
+    commentary_item_view: {
+        flexDirection: 'row',
+        marginTop:15,
+        marginBottom:15,
+    },
+    commentary_item_auther_img: {
+        width:36,
+        height:36,
+        marginRight:6,
+        borderRadius:48,
+        borderWidth:1,
+        borderColor:MainColor,
+    },
+    commentary_item_view_top: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex:1,
+    },
+    commentary_item_view_top_left:{
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex:1,
+    },
+    commentary_item_view_top_name: {
+        color:GrayBlackColor,
+        marginRight:8,
+        fontSize:16,
+        fontWeight: '500',
+        maxWidth:width/3,
+    },
+    commentary_item_view_top_right: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingRight:6,
+    },
+    commentary_item_view_top_right_img:{
+        width:16,
+        height:16,
+        marginRight:6,
+    },
+    commentary_item_view_top_right_num:{
+        color:GrayColor,
+        fontSize:12,
+    },
+    commentary_item_view_mid:{
+        width:width-74
+    },
+    commentary_item_view_comment: {
+        color:GrayBlackColor,
+        fontSize:14,
+        lineHeight:22,
+        marginTop:4,
+        marginBottom:4,
+    },
+    commentary_item_view_time: {
+        color:GrayColor,
+        fontSize:12,
+        paddingRight:6,
+        alignSelf: 'flex-end',
     }
 }
