@@ -2,6 +2,7 @@
 import {Nuknown_Error, NetWork_Request_Error, ErrorAnayle} from './ErrorAnayle'
 import ErrorBean from "./ErrorBean";
 import {insertMovie,queryMovie,deleteMovie} from '../realm/RealmManager'
+import {Base} from '../constant/BaseContant'
 import React from 'react'
 
 /*基础链接头*/
@@ -11,7 +12,7 @@ const Movie_Hoting_Url = "/movie/in_theaters"
 /*电影条目信息*/
 const Movie_Detail_Url = '/movie/subject/'
 /*apikey*/
-const DouBan_ApiKey='0df993c66c0c636e29ecbb5344252a4a';
+const DouBan_ApiKey='00aefce4d06e0bb7020cf6ae714a2325';
 
 export default class HttpMovieManager {
 
@@ -57,6 +58,31 @@ export default class HttpMovieManager {
                 .then((data)=>{
                     if (data != null && data.id != null) {
                         resolve(data)
+                    } else if (data != null && data.code != null && typeof data.code == 'number') {
+                        reject(ErrorAnayle.getErrorBean(data.code))
+                    } else {
+                        reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                    }
+                })
+                .catch((error)=>{
+                    if (error != null && error instanceof ErrorBean) {
+                        reject(error)
+                    } else {
+                        reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                    }
+                })
+        })
+    }
+
+    /*剧照*/
+    getPhotoDatas(id,count) {
+        return new Promise((resolve,reject) =>{
+            this.fetchNetData(BaseUrl+Movie_Detail_Url+id+'/photos'+"?count="+count+"&"+Base.name+"="+Base.value)
+                .then((data)=>{
+                    if (data != null && data.count != null) {
+                        resolve(data)
+                    } else if (data != null && data.code != null && typeof data.code == 'number') {
+                        reject(ErrorAnayle.getErrorBean(data.code))
                     } else {
                         reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
                     }

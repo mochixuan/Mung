@@ -21,7 +21,10 @@ const Init_HotMovies = {
         }]
     }
 }
-
+const Base = {
+    name: 'apikey',
+    value: '0df993c66c0c636e29ecbb5344252a4a'
+}
 const Cate_Data = [
     {
         title: '即将上映',
@@ -46,4 +49,11 @@ const Cate_Data = [
     }
 ]
 
-export {App_Name,Cate_Data}
+const Default_Photos = {
+    w_badge: -1,
+    photos:[{
+        photos_count: -1,
+    }]
+}
+
+export {Base,App_Name,Cate_Data,Default_Photos}

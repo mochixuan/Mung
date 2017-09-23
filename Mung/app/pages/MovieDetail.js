@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
+    FlatList,
 } from 'react-native'
 import {
     MainBg, MainColor, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor, Translucent, BlackTextColor,
@@ -18,9 +19,11 @@ import MoreTextView from '../widget/MoreTextView'
 import LinearGradient from 'react-native-linear-gradient'
 import StarRating from 'react-native-star-rating'
 import {show} from "../utils/ToastUtils";
+import {Default_Photos} from '../data/constant/BaseContant'
 import HttpMovieManager from '../data/http/HttpMovieManager'
 
 const Header_Height = (height-DEFAULT_NAVBAR_HEIGHT)/2;
+const InitPhoto_Count = 6;
 
 export default class MovieDetail extends Component {
 
@@ -33,10 +36,13 @@ export default class MovieDetail extends Component {
         this.state= {
             rating: 0,
             movieData: null,
+            photoDatas:Default_Photos,
+            commentaryDatas:[],
             isInitSuccess: true,
         }
         this.HttpMovies  = new HttpMovieManager();
         this.requestData()
+        this.requestPhotos(InitPhoto_Count)
     }
 
     requestData() {
@@ -51,6 +57,19 @@ export default class MovieDetail extends Component {
                 }
                 this.setState({isInitSuccess:false})
         })
+    }
+
+    requestPhotos(count) {
+        this.HttpMovies.getPhotoDatas(this.props.navigation.state.params.data,count)
+            .then((data)=>{
+                this.setState({photoDatas:data})
+            }).catch((error)=>{
+                if (error != null && error instanceof ErrorBean) {
+                    show(error.getErrorMsg())
+                } else {
+                    show("网络错误")
+                }
+            })
     }
 
     _getParallaxLeftView() {
@@ -78,6 +97,64 @@ export default class MovieDetail extends Component {
         )
     }
 
+    _getFileMakerItemView(item) {
+        return (
+            <View style={styles.filemiker_View}>
+                <Image
+                    source={{uri:item.avatars.large}}
+                    style={styles.filemiker_view_image}/>
+                <Text style={styles.filemiker_view_name} numberOfLines={1}>{item.name}</Text>
+            </View>
+        )
+    }
+
+    _getPhotosItemView(item,index) {
+        if (this.state.photoDatas.w_badge != null) {
+            return (
+                <TouchableOpacity
+                    underlayColor='rgba(100,51,200,0.1)'
+                    onPress={()=>{this.requestPhotos(InitPhoto_Count)}}>
+                    <View style={styles.photos_loading}>
+                        <Text style={styles.photos_item_reloadtext}>重新加载剧照</Text>
+                    </View>
+                </TouchableOpacity>
+            )
+        } else {
+            if (index == this.state.photoDatas.photos.length-1) {
+                return (
+                    <TouchableOpacity
+                        underlayColor='rgba(100,51,200,0.8)'
+                        onPress={()=>{show("加载更多"+this.state.photoDatas.photos.length)}}>
+                        <View style={styles.photos_loading}>
+                            <Text style={styles.photos_item_text}>全部剧照</Text>
+                            <View style={styles.photos_item_mask}/>
+                            <Text style={styles.photos_item_text}>{item.photos_count}张</Text>
+                        </View>
+                    </TouchableOpacity>
+                )
+            } else {
+                return (
+                    <TouchableOpacity
+                        underlayColor='rgba(100,51,200,0.1)'
+                        onPress={()=>{show("进入图片浏览")}}>
+                        <Image
+                            source={{uri:item.image}}
+                            style={styles.photos_item_image}
+                        />
+                    </TouchableOpacity>
+                )
+            }
+        }
+    }
+
+    _getCommentaryDatas(item,index) {
+        return (
+            <View>
+
+            </View>
+        )
+    }
+
     getRatingComment() {
         const number = this.state.movieData.ratings_count;
         if (number ==0) {
@@ -88,7 +165,6 @@ export default class MovieDetail extends Component {
     }
 
     render() {
-
         if (this.state.movieData==null) {
             return (
                 this.state.isInitSuccess?(
@@ -118,6 +194,7 @@ export default class MovieDetail extends Component {
                     navBarColor={MainColor}
                     navBarTitleColor={WhiteTextColor}
                     leftView={this._getParallaxLeftView()}
+                    rightView={<View/>}
                     headerView={this._getParallaxHeaderView()}>
                     <ScrollView style={styles.container}>
                         {/*评分等介绍*/}
@@ -173,12 +250,49 @@ export default class MovieDetail extends Component {
                                 hideText='缩小'
                                 showText='展开'
                                 textStyle={{
-                                    color: GrayColor,
+                                    color: MainColor,
                                     fontSize:14,
                                     marginTop:4,
                                 }}>
                                 <Text style={styles.brief_view_intro}>{this.state.movieData.summary}</Text>
                             </MoreTextView>
+                        </View>
+                        {/*影人*/}
+                        <View style={styles.filemaker}>
+                            <Text style={styles.filemaker_text}>影人</Text>
+                            <FlatList
+                                data={this.state.movieData.casts}
+                                keyExtractor={(item, index) => index}
+                                renderItem={({item})=>(this._getFileMakerItemView(item))}
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                            />
+                        </View>
+                        {/*剧照*/}
+                        <View style={styles.photos}>
+                            <Text style={styles.photos_text}>剧照</Text>
+                            <FlatList
+                                data={this.state.photoDatas.photos}
+                                keyExtractor={(item, index) => index}
+                                renderItem={({item,index})=>(this._getPhotosItemView(item,index))}
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                            />
+                        </View>
+                        {/*评论*/}
+                        <View style={styles.commentary}>
+                            <View style={styles.commentary_descr_view}>
+                                <Text style={styles.commentary_descr_text}>评论区</Text>
+                            </View>
+                            <View style={styles.commentary_flatlist_view}>
+                                <FlatList
+                                    data={this.state.commentaryDatas}
+                                    keyExtractor={(item, index) => index}
+                                    renderItem={({item,index})=>(this._getCommentaryDatas(item,index))}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                />
+                            </View>
                         </View>
                     </ScrollView>
                 </ParallaxScrollView>
@@ -241,7 +355,7 @@ const styles = {
         height: 200,
         width:width,
         borderBottomWidth:1,
-        borderBottomColor: WhiteTextColor,
+        borderBottomColor: White,
     },
     intro_one: {
         flex:5,
@@ -315,4 +429,100 @@ const styles = {
         color:GrayBlackColor,
         lineHeight:24,
     },
+    filemaker: {
+        height: 216,
+        flex:1,
+        padding:16,
+        paddingTop:0,
+    },
+    filemaker_text: {
+        fontSize:14,
+        color:GrayColor,
+        marginBottom:6,
+    },
+    filemiker_View: {
+        height:186,
+        width:(width-32)/4,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    filemiker_view_image: {
+        width:(width-32)*0.24,
+        height:140,
+        borderRadius:2,
+    },
+    filemiker_view_name: {
+        fontSize:14,
+        color:GrayBlackColor,
+        marginTop:6,
+    },
+    photos: {
+        height: 200,
+        flex:1,
+        padding:16,
+        paddingTop:0,
+        borderColor: White,
+        borderBottomWidth:1,
+    },
+    photos_text: {
+        fontSize:14,
+        color:GrayColor,
+        marginBottom:6,
+    },
+    photos_item_image: {
+        height:150,
+        width:220,
+        marginRight:4,
+        borderRadius:2,
+    },
+    photos_loading: {
+        width:150,
+        height:150,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight:4,
+        backgroundColor: GrayColor,
+        borderRadius:2,
+    },
+    photos_item_text: {
+        fontSize:12,
+        color:GrayWhiteColor,
+    },
+    photos_item_mask: {
+        width:40,
+        height:1,
+        marginTop:4,
+        marginBottom:4,
+        backgroundColor:GrayWhiteColor,
+    },
+    photos_item_reloadtext: {
+        color: MainColor,
+        fontSize:18,
+        fontWeight: '500',
+    },
+    commentary: {
+        width:width,
+    },
+    commentary_descr_view: {
+        width:width,
+        height:48,
+        paddingLeft:16,
+        paddingRight:16,
+        justifyContent:'center',
+        borderColor: White,
+        borderBottomWidth:2,
+    },
+    commentary_descr_text: {
+        color:GrayColor,
+        fontSize:16,
+        marginLeft:10,
+        fontWeight:'500',
+    },
+    commentary_flatlist_view: {
+        flex:1,
+        width:width,
+        backgroundColor:'#f00',
+        paddingLeft:16,
+        paddingRight:16,
+    }
 }
