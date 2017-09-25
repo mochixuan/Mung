@@ -10,14 +10,14 @@ import {
     RefreshControl,
     TouchableOpacity,
 } from 'react-native'
-import {MainBg, MainColor, WhiteTextColor, GrayWhiteColor,Translucent} from './basestyle/BaseStyle'
+import {MainBg, MainColor, WhiteTextColor, GrayWhiteColor,Translucent} from '../basestyle/BaseStyle'
 import Swiper from 'react-native-swiper'
-import {show} from '../utils/ToastUtils'
-import {width,jumpPager} from '../utils/Utils'
-import {App_Name,Cate_Data} from '../data/constant/BaseContant'
-import TouchableView from '../widget/TouchableView'
-import ErrorBean from '../data/http/ErrorBean'
-import HttpMovieManager from '../data/http/HttpMovieManager'
+import {show} from '../../utils/ToastUtils'
+import {width,jumpPager} from '../../utils/Utils'
+import {App_Name,Cate_Data} from '../../data/constant/BaseContant'
+import TouchableView from '../../widget/TouchableView'
+import ErrorBean from '../../data/http/ErrorBean'
+import HttpMovieManager from '../../data/http/HttpMovieManager'
 import StarRating from 'react-native-star-rating'
 import LinearGradient from 'react-native-linear-gradient'
 
@@ -50,7 +50,7 @@ export default class Movie extends Component {
                     //jumpPager(navigation.navigate,"MovieDetail",null)
                 }}>
                 <Image
-                    source={require('../data/img/icon_search.png')}
+                    source={require('../../data/img/icon_search.png')}
                     style={{
                         width:26,
                         height:26,
@@ -161,9 +161,9 @@ export default class Movie extends Component {
                                         rating={item.rating.average/2}
                                         maxStars={5}
                                         halfStarEnabled={true}
-                                        emptyStar={require('../data/img/icon_unselect.png')}
-                                        halfStar={require('../data/img/icon_half_select.png')}
-                                        fullStar={require('../data/img/icon_selected.png')}
+                                        emptyStar={require('../../data/img/icon_unselect.png')}
+                                        halfStar={require('../../data/img/icon_half_select.png')}
+                                        fullStar={require('../../data/img/icon_selected.png')}
                                         starStyle={{width: 20, height: 20}}
                                         selectedStar={(rating)=>{}}/>
                                     <Text style={styles.swiper_children_rating_text}>{item.rating.average.toFixed(1)}</Text>
@@ -177,7 +177,7 @@ export default class Movie extends Component {
             return (
                 <Image
                     resizeMode='cover'
-                    source={require('../data/img/icon_search.png')}
+                    source={require('../../data/img/icon_search.png')}
                     style={{
                         height: 240,
                         width:width,
@@ -239,9 +239,9 @@ export default class Movie extends Component {
                                     rating={item.rating.average/2}
                                     maxStars={5}
                                     halfStarEnabled={true}
-                                    emptyStar={require('../data/img/icon_unselect.png')}
-                                    halfStar={require('../data/img/icon_half_select.png')}
-                                    fullStar={require('../data/img/icon_selected.png')}
+                                    emptyStar={require('../../data/img/icon_unselect.png')}
+                                    halfStar={require('../../data/img/icon_half_select.png')}
+                                    fullStar={require('../../data/img/icon_selected.png')}
                                     starStyle={{width: 14, height: 14}}
                                     selectedStar={(rating)=>{}}/>
                                 <Text style={styles.flat_item_rating_number} numberOfLines={1}>{item.rating.average.toFixed(1)}</Text>

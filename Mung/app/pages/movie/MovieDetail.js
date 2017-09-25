@@ -11,16 +11,15 @@ import {
 import {
     MainBg, MainColor, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor, Translucent, BlackTextColor,
     GrayColor, White
-} from './basestyle/BaseStyle'
-import {width,height} from '../utils/Utils'
-import ErrorBean from '../data/http/ErrorBean'
-import {ParallaxScrollView,DEFAULT_NAVBAR_HEIGHT} from '../widget/ParallaxScrollView'
-import MoreTextView from '../widget/MoreTextView'
+} from '../basestyle/BaseStyle'
+import {width, height, jumpPager} from '../../utils/Utils'
+import ErrorBean from '../../data/http/ErrorBean'
+import {ParallaxScrollView,DEFAULT_NAVBAR_HEIGHT} from '../../widget/ParallaxScrollView'
 import LinearGradient from 'react-native-linear-gradient'
 import StarRating from 'react-native-star-rating'
-import {show} from "../utils/ToastUtils";
-import {Default_Photos} from '../data/constant/BaseContant'
-import HttpMovieManager from '../data/http/HttpMovieManager'
+import {show} from "../../utils/ToastUtils";
+import {Default_Photos} from '../../data/constant/BaseContant'
+import HttpMovieManager from '../../data/http/HttpMovieManager'
 
 const Header_Height = (height-DEFAULT_NAVBAR_HEIGHT)/2;
 const InitPhoto_Count = 6;
@@ -40,6 +39,7 @@ export default class MovieDetail extends Component {
             commentaryDatas:{},
             isInitSuccess: true,
             IsLoadingComment: true,
+            isShowAll:false,
         }
         this.HttpMovies  = new HttpMovieManager();
         this.requestData()
@@ -114,7 +114,7 @@ export default class MovieDetail extends Component {
                 }}>
                 <Image
                     style={BaseStyles.baseIcon}
-                    source={require('../data/img/icon_back.png')}/>
+                    source={require('../../data/img/icon_back.png')}/>
             </TouchableOpacity>)
     }
 
@@ -160,7 +160,7 @@ export default class MovieDetail extends Component {
                 return (
                     <TouchableOpacity
                         underlayColor='rgba(100,51,200,0.8)'
-                        onPress={()=>{show("加载更多"+this.state.photoDatas.photos.length)}}>
+                        onPress={()=>{this.jumpImageBrowerPager(0)}}>
                         <View style={styles.photos_loading}>
                             <Text style={styles.photos_item_text}>全部剧照</Text>
                             <View style={styles.photos_item_mask}/>
@@ -172,15 +172,22 @@ export default class MovieDetail extends Component {
                 return (
                     <TouchableOpacity
                         underlayColor='rgba(100,51,200,0.1)'
-                        onPress={()=>{show("进入图片浏览")}}>
-                        <Image
-                            source={{uri:item.image}}
-                            style={styles.photos_item_image}
-                        />
+                        onPress={()=>{this.jumpImageBrowerPager(index)}}>
+                            <Image
+                                source={{uri:item.image}}
+                                style={styles.photos_item_image}/>
                     </TouchableOpacity>
                 )
             }
         }
+    }
+
+    jumpImageBrowerPager(index) {
+        jumpPager(this.props.navigation.navigate,'ImageDetailBrower',{
+            id:this.props.navigation.state.params.data,
+            index:index,
+            count:this.state.photoDatas.photos[0].photos_count,
+        })
     }
 
     _getCommentaryItemView(item) {
@@ -201,15 +208,15 @@ export default class MovieDetail extends Component {
                                 rating={item.rating.value}
                                 maxStars={5}
                                 halfStarEnabled={true}
-                                emptyStar={require('../data/img/icon_unselect.png')}
-                                halfStar={require('../data/img/icon_half_select.png')}
-                                fullStar={require('../data/img/icon_selected.png')}
+                                emptyStar={require('../../data/img/icon_unselect.png')}
+                                halfStar={require('../../data/img/icon_half_select.png')}
+                                fullStar={require('../../data/img/icon_selected.png')}
                                 starStyle={{width: 10, height: 10}}
                                 selectedStar={(rating)=>{}}/>
                         </View>
                         <View style={styles.commentary_item_view_top_right}>
                             <Image
-                                source={require('../data/img/icon_zan.png')}
+                                source={require('../../data/img/icon_zan.png')}
                                 style={styles.commentary_item_view_top_right_img}
                                 tintColor={MainColor}
                             />
@@ -315,9 +322,9 @@ export default class MovieDetail extends Component {
                                         rating={this.state.movieData.rating.average/2}
                                         maxStars={5}
                                         halfStarEnabled={true}
-                                        emptyStar={require('../data/img/icon_unselect.png')}
-                                        halfStar={require('../data/img/icon_half_select.png')}
-                                        fullStar={require('../data/img/icon_selected.png')}
+                                        emptyStar={require('../../data/img/icon_unselect.png')}
+                                        halfStar={require('../../data/img/icon_half_select.png')}
+                                        fullStar={require('../../data/img/icon_selected.png')}
                                         starStyle={{width: 12, height: 12}}
                                         selectedStar={(rating)=>{}}/>
                                     <Text style={styles.intro_one_right_number} numberOfLines={1}>{this.getRatingComment()}</Text>
@@ -330,9 +337,9 @@ export default class MovieDetail extends Component {
                                     rating={this.state.rating}
                                     maxStars={5}
                                     halfStarEnabled={false}
-                                    emptyStar={require('../data/img/icon_unselect.png')}
-                                    halfStar={require('../data/img/icon_half_select.png')}
-                                    fullStar={require('../data/img/icon_selected.png')}
+                                    emptyStar={require('../../data/img/icon_unselect.png')}
+                                    halfStar={require('../../data/img/icon_half_select.png')}
+                                    fullStar={require('../../data/img/icon_selected.png')}
                                     starStyle={{width: 20, height: 20}}
                                     selectedStar={(rating)=>{
                                         this.setState({
@@ -344,17 +351,14 @@ export default class MovieDetail extends Component {
                         {/*简介*/}
                         <View style={styles.brief_view}>
                             <Text style={styles.brief_view_text}>简介</Text>
-                            <MoreTextView
-                                numberOfLines={4}
-                                hideText='缩小'
-                                showText='展开'
-                                textStyle={{
-                                    color: MainColor,
-                                    fontSize:14,
-                                    marginTop:4,
-                                }}>
-                                <Text style={styles.brief_view_intro}>{this.state.movieData.summary}</Text>
-                            </MoreTextView>
+                            <Text style={styles.brief_view_intro} numberOfLines={this.state.isShowAll?99:4}>
+                                {this.state.movieData.summary}
+                            </Text>
+                            {this.state.isShowAll==false?<View style={styles.brief_view_expand}>
+                                    <Text
+                                        onPress={()=>{this.setState({isShowAll:true})}}
+                                          style={styles.brief_view_expand_text}>展开</Text>
+                            </View>:null}
                         </View>
                         {/*影人*/}
                         <View style={styles.filemaker}>
@@ -528,6 +532,18 @@ const styles = {
         fontSize:14,
         color:GrayBlackColor,
         lineHeight:24,
+    },
+    brief_view_expand: {
+        position:'absolute',
+        bottom:16,
+        right:16,
+    },
+    brief_view_expand_text:{
+        fontSize:14,
+        color:MainColor,
+        lineHeight:24,
+        paddingLeft:10,
+        backgroundColor:MainBg
     },
     filemaker: {
         height: 216,

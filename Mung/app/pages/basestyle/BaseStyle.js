@@ -9,6 +9,7 @@ const MainBg = '#f5f5f5'
 const GrayWhiteColor = '#f5f5f5'
 const MikeWhiteColor = '#f0ffff'
 const BlackTextColor = '#444444'
+const BlackColor = '#000000'
 const WhiteTextColor = '#ffffff'
 
 const BaseStyles = StyleSheet.create({
@@ -33,6 +34,7 @@ export {
     GrayBlackColor,
     Translucent,
     White,
+    BlackColor,
     GrayWhiteColor,
     MikeWhiteColor,
     BlackTextColor,

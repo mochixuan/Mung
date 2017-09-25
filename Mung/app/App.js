@@ -3,8 +3,9 @@ import {
     TabNavigator
 } from 'react-navigation'
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator'
-import Movie from './pages/Movie'
-import MovieDetail from './pages/MovieDetail'
+import Movie from './pages/movie/Movie'
+import MovieDetail from './pages/movie/MovieDetail'
+import ImageDetailBrower from './pages/image/ImageDetailBrower'
 import {MainBg,MainColor,GrayColor} from './pages/basestyle/BaseStyle'
 
 /*
@@ -47,6 +48,7 @@ const App = StackNavigator({
     //MainTabPage: {screen:MainTabPage},
     Movie: {screen:Movie},
     MovieDetail:{screen:MovieDetail},
+    ImageDetailBrower:{screen:ImageDetailBrower},
 },{
     navigationOptions: {
         gesturesEnabled: true,
