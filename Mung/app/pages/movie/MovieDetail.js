@@ -7,6 +7,7 @@ import {
     ScrollView,
     ActivityIndicator,
     FlatList,
+    StatusBar,
 } from 'react-native'
 import {
     MainBg, MainColor, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor, Translucent, BlackTextColor,
@@ -302,6 +303,12 @@ export default class MovieDetail extends Component {
                     leftView={this._getParallaxLeftView()}
                     rightView={<View/>}
                     headerView={this._getParallaxHeaderView()}>
+                    {/*状态栏*/}
+                    <StatusBar
+                        animated = {true}
+                        backgroundColor = {MainColor}
+                        barStyle = 'light-content'
+                    />
                     <ScrollView style={styles.container}>
                         {/*评分等介绍*/}
                         <View style={styles.intro}>

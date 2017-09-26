@@ -56,4 +56,47 @@ const Default_Photos = {
     }]
 }
 
-export {Base,App_Name,Cate_Data,Default_Photos}
+const Movie_Types = [
+    {
+        type: '搞笑',
+        icon: require('../img/icon_tag_1.png'),
+        color:'#e3812b',
+    },
+    {
+        type: '爱情',
+        icon: require('../img/icon_tag_2.png'),
+        color:'#ff329b',
+    },
+    {
+        type: '动作',
+        icon: require('../img/icon_tag_3.png'),
+        color:'#1415ff',
+    },
+    {
+        type: '科技',
+        icon: require('../img/icon_tag_4.png'),
+        color:'#81c6ff',
+    },
+    {
+        type: '记录',
+        icon: require('../img/icon_tag_5.png'),
+        color:'#5fc0a5',
+    },
+    {
+        type: '动漫',
+        icon: require('../img/icon_tag_6.png'),
+        color:'#44ff19',
+    },
+    {
+        type: '犯罪',
+        icon: require('../img/icon_tag_7.png'),
+        color:'#0c040d',
+    },
+    {
+        type: '战争',
+        icon: require('../img/icon_tag_8.png'),
+        color:'#b10723',
+    }
+]
+
+export {Base,App_Name,Cate_Data,Default_Photos,Movie_Types}

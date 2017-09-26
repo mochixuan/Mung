@@ -6,6 +6,8 @@ import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyl
 import Movie from './pages/movie/Movie'
 import MovieDetail from './pages/movie/MovieDetail'
 import ImageDetailBrower from './pages/image/ImageDetailBrower'
+import Search from './pages/search/Search'
+import SearchDetail from './pages/search/SearchDetail'
 import {MainBg,MainColor,GrayColor} from './pages/basestyle/BaseStyle'
 
 /*
@@ -49,6 +51,8 @@ const App = StackNavigator({
     Movie: {screen:Movie},
     MovieDetail:{screen:MovieDetail},
     ImageDetailBrower:{screen:ImageDetailBrower},
+    Search:{screen:Search},
+    SearchDetail:{screen:SearchDetail},
 },{
     navigationOptions: {
         gesturesEnabled: true,

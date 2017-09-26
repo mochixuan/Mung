@@ -35,7 +35,6 @@ export default class Movie extends Component {
         headerStyle: {
             backgroundColor: MainColor,
         },
-        headerTintColor : 'red',
         headerLeft:(
             <View
                 style={{
@@ -47,7 +46,7 @@ export default class Movie extends Component {
         headerRight: (
             <TouchableOpacity
                 onPress={()=>{
-                    //jumpPager(navigation.navigate,"MovieDetail",null)
+                    jumpPager(navigation.navigate,"Search",null)
                 }}>
                 <Image
                     source={require('../../data/img/icon_search.png')}

@@ -79,7 +79,10 @@ export default class ImageDetailBrower extends Component {
                         style={[styles.swiper_bigimg_image,{
                             opacity:this.fadeAnim,
                             transform:[{
-                                scale:this.fadeAnim
+                                scale:this.fadeAnim.interpolate({
+                                    inputRange: [0,1],
+                                    outputRange: [0.2,1],
+                                })
                             }]
                         }]}/>
                 </View>
