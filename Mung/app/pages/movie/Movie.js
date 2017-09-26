@@ -172,21 +172,6 @@ export default class Movie extends Component {
                     </TouchableView>
                 )
             })
-        } else {
-            return (
-                <Image
-                    resizeMode='cover'
-                    source={require('../../data/img/icon_search.png')}
-                    style={{
-                        height: 240,
-                        width:width,
-                        backgroundColor: "#f00",
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}>
-                    <Text>saasa</Text>
-                </Image>
-            )
         }
     }
 
@@ -196,7 +181,12 @@ export default class Movie extends Component {
                 <TouchableView
                     key={i}
                     style={styles.cate_children_touchview}
-                    onPress={()=>show(item.title)}>
+                    onPress={()=>{
+                        jumpPager(this.props.navigation.navigate,'MovieList',{
+                            index:item.index,
+                            title:item.title,
+                        })
+                    }}>
                     <View style={styles.cate_children_view}>
                         <LinearGradient
                             colors={item.colors}
@@ -301,7 +291,6 @@ export default class Movie extends Component {
                             }
                             getItemLayout={(data,index)=> this._getItemLayout(data,index)}
                             showsVerticalScrollIndicator={false}
-                            showV
                             numColumns={3}
                         />
                     </View>

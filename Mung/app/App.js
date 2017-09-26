@@ -5,6 +5,7 @@ import {
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator'
 import Movie from './pages/movie/Movie'
 import MovieDetail from './pages/movie/MovieDetail'
+import MovieList from './pages/movie/MovieList'
 import ImageDetailBrower from './pages/image/ImageDetailBrower'
 import Search from './pages/search/Search'
 import SearchDetail from './pages/search/SearchDetail'
@@ -50,6 +51,7 @@ const App = StackNavigator({
     //MainTabPage: {screen:MainTabPage},
     Movie: {screen:Movie},
     MovieDetail:{screen:MovieDetail},
+    MovieList:{screen:MovieList},
     ImageDetailBrower:{screen:ImageDetailBrower},
     Search:{screen:Search},
     SearchDetail:{screen:SearchDetail},
@@ -58,9 +60,9 @@ const App = StackNavigator({
         gesturesEnabled: true,
     },
     headerMode: 'screen',
-    transitionConfig:()=>{
+    transitionConfig:(()=>({
         screenInterpolator: CardStackStyleInterpolator.forHorizontal
-    }
+    }))
 })
 
 

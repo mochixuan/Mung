@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
         flex:1,
     },
     search_view: {
-        height:54,
+        height:56,
         width:width,
         backgroundColor:MainColor,
         alignItems: 'center',

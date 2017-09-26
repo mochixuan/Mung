@@ -13,7 +13,7 @@ const ScrollViewPropTypes = ScrollView.propTypes;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const DEFAULT_WINDOW_MULTIPLIER = 0.50;
-const DEFAULT_NAVBAR_HEIGHT = 54;
+const DEFAULT_NAVBAR_HEIGHT = 56;
 
 class ParallaxScrollView extends Component {
     constructor() {

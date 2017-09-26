@@ -9,6 +9,14 @@ import React from 'react'
 const BaseUrl = "https://api.douban.com/v2"
 /*正在热映*/
 const Movie_Hoting_Url = "/movie/in_theaters"
+/*top250*/
+const Movie_UpComming_Url="/movie/top250"
+/*口碑榜*/
+const Movie_Praise_Url = "/movie/weekly"
+/*北美票房榜*/
+const Movie_North_Url = "/movie/us_box"
+/*新片榜*/
+const Movie_News_Url = "/movie/new_movies"
 /*电影条目信息*/
 const Movie_Detail_Url = '/movie/subject/'
 /*apikey*/
@@ -106,6 +114,49 @@ export default class HttpMovieManager {
                         if (data.code != null && typeof data.code == 'number') {
                             reject(ErrorAnayle.getErrorBean(data.code))
                         } else if (data.count != null && data.count>0){
+                            resolve(data)
+                        } else {
+                            reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                        }
+                    } else {
+                        reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                    }
+                }).catch((error)=>{
+                if (error != null && error instanceof ErrorBean) {
+                    reject(error)
+                } else {
+                    reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                }
+            })
+        })
+    }
+
+    /*电影列表数据*/
+    getOtherMovieData(index,start,count) {
+        let Suffix = Movie_UpComming_Url;
+        let key = "";
+        switch (index) {
+            case 0:
+                break;
+            case 1:
+                Suffix = Movie_Praise_Url;
+                key = "&"+Base.name+"="+Base.value;
+                break;
+            case 2:
+                Suffix = Movie_North_Url;
+                break;
+            case 3:
+                Suffix = Movie_News_Url;
+                key = "&"+Base.name+"="+Base.value;
+                break;
+        }
+        return new Promise((resolve,reject) => {
+            this.fetchNetData(BaseUrl+Suffix+"?start="+start+"&count="+count+key)
+                .then((data)=>{
+                    if (data != null) {
+                        if (data.code != null && typeof data.code == 'number') {
+                            reject(ErrorAnayle.getErrorBean(data.code))
+                        } else if (data.subjects != null && data.subjects.length>0){
                             resolve(data)
                         } else {
                             reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))

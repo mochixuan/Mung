@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         borderRadius:6,
     },
     toolbar_view: {
-        height:54,
+        height:56,
         width:width,
         position: 'absolute',
         zIndex:1,

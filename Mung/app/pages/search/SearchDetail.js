@@ -26,21 +26,27 @@ export default class SearchDetail extends Component {
 
     constructor(props) {
         super(props)
-
         this.state={
             isInitSuccess: false,
         }
+        this.index = this.props.navigation.state.params.data
+        this.HttpMovie = new HttpMovieManager();
+    }
+
+    requestData() {
+
     }
 
     render() {
         if (!this.state.isInitSuccess) {
             return (
-
                     <Modal
-                        animationType={"slide"}
+                        animationType={"fade"}
                         transparent={true}
                         visible={!this.state.isInitSuccess}
-                        onRequestClose={() => {}}>
+                        onRequestClose={() => {
+                            this.props.navigation.goBack()
+                        }}>
                         <View style={styles.modal}>
                             <LinearGradient style={styles.modal_view} colors={[MainColor,WhiteTextColor]}>
                                 <ActivityIndicator
