@@ -64,7 +64,7 @@ export default class MovieList extends Component {
         if (this.state.movieData.subjects != null) {
             if (this.state.movieData.start != null) {
                 start = this.state.movieData.start+1;
-                if (this.state.movieData.total == this.state.movieData.start) {
+                if (this.state.movieData.total <= this.state.movieData.start*this.state.movieData.count) {
                     this.setState({
                         refreshing: false,
                     })
@@ -118,30 +118,34 @@ export default class MovieList extends Component {
 
     _renderItemView(item){
         return (
-            <View style={styles.item}>
-                <Image
-                    source={{uri:item.images.large}}
-                    style={styles.item_img}/>
-                <View style={styles.item_right}>
-                    <Text style={styles.item_right_title} numberOfLines={1}>{item.title}</Text>
-                    <Text style={styles.item_right_text} numberOfLines={1}>导演: {item.directors[0].name}</Text>
-                    <Text style={styles.item_right_text} numberOfLines={2}>主演: {item.casts.map((data,i)=>data.name).join(' ')}</Text>
-                    <Text style={styles.item_right_text} numberOfLines={1}>{item.year}</Text>
-                    <View style={styles.item_right_rating}>
-                        <StarRating
-                            disabled={false}
-                            rating={item.rating.average/2}
-                            maxStars={5}
-                            halfStarEnabled={true}
-                            emptyStar={require('../../data/img/icon_unselect.png')}
-                            halfStar={require('../../data/img/icon_half_select.png')}
-                            fullStar={require('../../data/img/icon_selected.png')}
-                            starStyle={{width: 20, height: 20}}
-                            selectedStar={(rating)=>{}}/>
-                        <Text style={styles.item_right_rating_text}>{item.rating.average.toFixed(1)}</Text>
+            <TouchableView onPress={()=>{
+                jumpPager(this.props.navigation.navigate,'MovieDetail',item.id)
+            }}>
+                <View style={styles.item}>
+                    <Image
+                        source={{uri:item.images.large}}
+                        style={styles.item_img}/>
+                    <View style={styles.item_right}>
+                        <Text style={styles.item_right_title} numberOfLines={1}>{item.title}</Text>
+                        <Text style={styles.item_right_text} numberOfLines={1}>导演: {(item.directors[0]!=null?item.directors[0].name:"未知")}</Text>
+                        <Text style={styles.item_right_text} numberOfLines={2}>主演: {item.casts.map((data,i)=>data.name).join(' ')}</Text>
+                        <Text style={styles.item_right_text} numberOfLines={1}>{item.year}</Text>
+                        <View style={styles.item_right_rating}>
+                            <StarRating
+                                disabled={false}
+                                rating={item.rating.average/2}
+                                maxStars={5}
+                                halfStarEnabled={true}
+                                emptyStar={require('../../data/img/icon_unselect.png')}
+                                halfStar={require('../../data/img/icon_half_select.png')}
+                                fullStar={require('../../data/img/icon_selected.png')}
+                                starStyle={{width: 20, height: 20}}
+                                selectedStar={(rating)=>{}}/>
+                            <Text style={styles.item_right_rating_text}>{item.rating.average.toFixed(1)}</Text>
+                        </View>
                     </View>
                 </View>
-            </View>
+            </TouchableView>
         )
     }
 

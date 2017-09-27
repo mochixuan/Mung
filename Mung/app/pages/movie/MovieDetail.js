@@ -79,7 +79,7 @@ export default class MovieDetail extends Component {
         let start = 0
         if (this.state.commentaryDatas.start != null) {
             start = this.state.commentaryDatas.start+1;
-            if (start>=this.state.commentaryDatas.total) {
+            if (this.state.commentaryDatas.start*this.state.commentaryDatas.count>=this.state.commentaryDatas.total) {
                 show("没有更多评论");
                 this.setState({
                     IsLoadingComment: false,
@@ -252,10 +252,14 @@ export default class MovieDetail extends Component {
         } else {
             return (
                 <TouchableOpacity onPress={()=>{
-                    this.setState({
-                        IsLoadingComment:true,
-                    })
-                    this.requestCommonary()}}>
+                    if (this.state.IsLoadingComment) {
+                        show('已加载中,请稍等')
+                    } else {
+                        this.setState({
+                            IsLoadingComment: true,
+                        })
+                        this.requestCommonary()
+                    }}}>
                     <Text style={styles.commentary_item_loadmore_text}>加载更多评论</Text>
                 </TouchableOpacity>
             )
@@ -318,7 +322,7 @@ export default class MovieDetail extends Component {
 
                                     <Text style={styles.intro_one_left_bottom_text} numberOfLines={1}>{this.state.movieData.year}/{this.state.movieData.genres.join('/')}</Text>
                                     <Text style={styles.intro_one_left_bottom_text} numberOfLines={1}>原名: {this.state.movieData.original_title}</Text>
-                                    <Text style={styles.intro_one_left_bottom_text} numberOfLines={1}>导演: {this.state.movieData.directors[0].name}</Text>
+                                    <Text style={styles.intro_one_left_bottom_text} numberOfLines={1}>导演: {(this.state.movieData.directors[0]!=null?this.state.movieData.directors[0].name:"未知")}</Text>
                                     <Text style={styles.intro_one_left_bottom_text} numberOfLines={1}>主演: {this.state.movieData.casts.map((data,i)=>data.name).join(' ')}</Text>
                                 </View>
                                 <View style={styles.intro_one_right}>

@@ -19,6 +19,8 @@ const Movie_North_Url = "/movie/us_box"
 const Movie_News_Url = "/movie/new_movies"
 /*电影条目信息*/
 const Movie_Detail_Url = '/movie/subject/'
+/*电影搜索*/
+const Movie_Search_Url = '/movie/search'
 /*apikey*/
 const DouBan_ApiKey='00aefce4d06e0bb7020cf6ae714a2325';
 
@@ -170,6 +172,36 @@ export default class HttpMovieManager {
                 } else {
                     reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
                 }
+            })
+        })
+    }
+
+    /*搜索的数据*/
+    getSearchData(index,str,start,count) {
+        let type = "&q="
+        if (index==1) {
+            type = "&tag="
+        }
+        return new Promise((resolve,reject) => {
+            this.fetchNetData(BaseUrl+Movie_Search_Url+"?start="+start+"&count="+count+type+str)
+                .then((data)=>{
+                    if (data != null) {
+                        if (data.code != null && typeof data.code == 'number') {
+                            reject(ErrorAnayle.getErrorBean(data.code))
+                        } else if (data.subjects != null && data.subjects.length>0){
+                            resolve(data)
+                        } else {
+                            reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                        }
+                    } else {
+                        reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                    }
+                }).catch((error)=>{
+                    if (error != null && error instanceof ErrorBean) {
+                        reject(error)
+                    } else {
+                        reject(ErrorAnayle.getErrorBean(NetWork_Request_Error))
+                    }
             })
         })
     }

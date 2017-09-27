@@ -8,7 +8,6 @@ import MovieDetail from './pages/movie/MovieDetail'
 import MovieList from './pages/movie/MovieList'
 import ImageDetailBrower from './pages/image/ImageDetailBrower'
 import Search from './pages/search/Search'
-import SearchDetail from './pages/search/SearchDetail'
 import {MainBg,MainColor,GrayColor} from './pages/basestyle/BaseStyle'
 
 /*
@@ -54,7 +53,6 @@ const App = StackNavigator({
     MovieList:{screen:MovieList},
     ImageDetailBrower:{screen:ImageDetailBrower},
     Search:{screen:Search},
-    SearchDetail:{screen:SearchDetail},
 },{
     navigationOptions: {
         gesturesEnabled: true,

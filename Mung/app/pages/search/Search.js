@@ -8,6 +8,8 @@ import {
     StyleSheet,
     StatusBar,
     TextInput,
+    Modal,
+    ActivityIndicator,
 } from 'react-native'
 import {width, height, jumpPager} from '../../utils/Utils'
 import ErrorBean from '../../data/http/ErrorBean'
@@ -16,10 +18,14 @@ import {show} from "../../utils/ToastUtils";
 import HttpMovieManager from '../../data/http/HttpMovieManager'
 import TouchableView from '../../widget/TouchableView'
 import {Movie_Types} from '../../data/constant/BaseContant'
+import StarRating from 'react-native-star-rating'
 import {
     MainBg, MainColor, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor, Translucent, BlackTextColor,
     GrayColor, White
 } from '../basestyle/BaseStyle'
+
+const itemHight = 200;
+const moviesCount = 20;
 
 export default class Search extends Component {
 
@@ -31,6 +37,232 @@ export default class Search extends Component {
         super(props)
         this.state = {
             editValue: '',
+            isShowModal: false,
+            searchDatas:{},
+            refreshing: false,
+            isCannelRequest: false,
+        }
+        this.title = "";
+        this.HttpMovies = new HttpMovieManager();
+    }
+
+    requestData(str) {
+        this.title = str;
+        let index = 0;
+        for (let i=0;i<Movie_Types.length;i++) {
+            if (Movie_Types[i].type==str) {
+                index = 1;
+                break;
+            }
+        }
+        let start = 0;
+        if (this.state.searchDatas.start != null) {
+            start = this.state.searchDatas.start+1;
+            if (this.state.searchDatas.total <= this.state.searchDatas.start*this.state.searchDatas.count) {
+                this.setState({
+                    refreshing: false,
+                })
+                show("已是最新数据")
+                return;
+            }
+        }
+
+        this.HttpMovies.getSearchData(index,str,start,moviesCount)
+            .then((movies)=>{
+                if (this.state.isCannelRequest) {
+                    return;
+                }
+                let preSubjects = this.state.searchDatas.subjects;
+                if (preSubjects != null && preSubjects.length>0) {
+                    preSubjects.filter((item,i)=>{
+                        return i< moviesCount;
+                    }).forEach((item,i)=>{
+                        movies.subjects.push(item)
+                    })
+                }
+                this.setState({
+                    isShowModal:false,
+                    searchDatas:movies,
+                    refreshing: false,
+                })
+            })
+            .catch((error)=>{
+                if (this.state.isCannelRequest) {
+                    return;
+                }
+                if (error != null && error instanceof ErrorBean) {
+                    show(error.getErrorMsg())
+                } else {
+                    show("网络错误")
+                }
+                this.setState({
+                    isShowModal:false,
+                    refreshing: false,
+                })
+            })
+    }
+
+    _getItemLayout(data, index) {
+        return {length: itemHight,offset: itemHight*index,index}
+    }
+
+    _renderItemView(item,index){
+        if (index == this.state.searchDatas.subjects.length-1) {
+            if (this.state.refreshing) {
+                return (
+                    <View style={styles.loading_more_view}>
+                        <TouchableOpacity onPress={()=>{show("加载中,请稍等")}}>
+                            <View style={{flexDirection:'row'}}>
+                                <ActivityIndicator
+                                    style={{marginRight:6}}
+                                    animating={true}
+                                    color={MainColor}/>
+                                <Text style={styles.loading_more_view_text}>加载中</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                )
+            } else {
+                return (
+                    <View style={styles.loading_more_view}>
+                        <TouchableOpacity onPress={()=>{
+                            if (this.state.refreshing) {
+                                show('已加载中,请稍等')
+                            } else {
+                                this.setState({
+                                    refreshing: true,
+                                })
+                                this.requestData(this.title)
+                            }}}>
+                            <Text style={styles.loading_more_view_text}>加载更多评论</Text>
+                        </TouchableOpacity>
+                    </View>
+                )
+            }
+        } else {
+            return (
+                <TouchableView onPress={()=>{
+                    jumpPager(this.props.navigation.navigate,'MovieDetail',item.id)
+                }}>
+                    <View style={styles.item}>
+                        <Image
+                            source={{uri:item.images.large}}
+                            style={styles.item_img}/>
+                        <View style={styles.item_right}>
+                            <Text style={styles.item_right_title} numberOfLines={1}>{item.title}</Text>
+                            <Text style={styles.item_right_text} numberOfLines={1}>导演: {(item.directors[0]!=null?item.directors[0].name:"未知") }</Text>
+                            <Text style={styles.item_right_text} numberOfLines={2}>主演: {item.casts.map((data,i)=>data.name).join(' ')}</Text>
+                            <Text style={styles.item_right_text} numberOfLines={1}>{item.year}</Text>
+                            <View style={styles.item_right_rating}>
+                                <StarRating
+                                    disabled={false}
+                                    rating={item.rating.average/2}
+                                    maxStars={5}
+                                    halfStarEnabled={true}
+                                    emptyStar={require('../../data/img/icon_unselect.png')}
+                                    halfStar={require('../../data/img/icon_half_select.png')}
+                                    fullStar={require('../../data/img/icon_selected.png')}
+                                    starStyle={{width: 20, height: 20}}
+                                    selectedStar={(rating)=>{}}/>
+                                <Text style={styles.item_right_rating_text}>{item.rating.average.toFixed(1)}</Text>
+                            </View>
+                        </View>
+                    </View>
+                </TouchableView>
+            )
+        }
+    }
+
+    _renderContentView() {
+        if (this.state.searchDatas.subjects == null) {
+            return (
+                <View style={styles.content}>
+                    {/*加载中*/}
+                    <Modal
+                        animationType={"fade"}
+                        transparent={true}
+                        visible={this.state.isShowModal}
+                        onRequestClose={() => {
+                            this.setState({
+                                isCannelRequest:true,
+                                isShowModal:false,
+                            })
+                            show("取消搜索")
+                        }}>
+                        <View style={styles.modal}>
+                            <LinearGradient style={styles.modal_view} colors={[MainColor,WhiteTextColor]}>
+                                <ActivityIndicator
+                                    style={{marginRight:6}}
+                                    animating={true}
+                                    color={MainColor}
+                                    size='large'/>
+                                <Text style={styles.modal_text}>加载中</Text>
+                            </LinearGradient>
+                        </View>
+                    </Modal>
+                    {/*搜索栏*/}
+                    <View style={styles.search_view}>
+                        <TouchableOpacity onPress={()=>{
+                            this.props.navigation.goBack()}}>
+                            <Image
+                                style={styles.search_view_back}
+                                source={require('../../data/img/icon_back.png')}/>
+                        </TouchableOpacity>
+                        <TextInput
+                            placeholder="search"
+                            placeholderTextColor={GrayColor}
+                            onChangeText={(text)=>this.setState({editValue:text})}
+                            value={this.state.editValue}
+                            ref='textinput'
+                            underlineColorAndroid='transparent'
+                            style={styles.search_view_edit}
+                        />
+                        <TouchableOpacity onPress={()=>{
+                            if (this.state.editValue==null && this.state.editValue.length==0) {
+                                show("请输入想搜索内容")
+                            } else {
+                                this.refs.textinput.blur()
+                                this.setState({
+                                    isShowModal:true,
+                                    isCannelRequest: false,
+                                })
+                                this.requestData(this.state.editValue)
+                            }}}>
+                            <Image
+                                style={styles.search_view_icon}
+                                source={require('../../data/img/icon_search.png')}/>
+                        </TouchableOpacity>
+                    </View>
+                    {/*推荐栏*/}
+                    <View style={styles.recommend_view}>
+                        {this.renderRecommendView()}
+                    </View>
+                </View>
+            )
+        } else {
+            return (
+                <View style={styles.content}>
+                    {/*搜索栏*/}
+                    <View style={styles.search_view}>
+                        <TouchableOpacity onPress={()=>{
+                            this.setState({searchDatas:{}})}}>
+                            <Image
+                                style={styles.search_view_back}
+                                source={require('../../data/img/icon_back.png')}/>
+                        </TouchableOpacity>
+                        <View style={styles.result_view}>
+                            <Text style={styles.result_title} numberOfLines={1}>{this.title}</Text>
+                        </View>
+                    </View>
+                    {/*列表栏*/}
+                    <FlatList
+                        data = {this.state.searchDatas.subjects}
+                        keyExtractor={(item,index)=>index}
+                        renderItem={({item,index}) => this._renderItemView(item,index)}
+                        getItemLayout={(data,index)=> this._getItemLayout(data,index)}
+                        showsVerticalScrollIndicator={false}/>
+                </View>
+            )
         }
     }
 
@@ -43,41 +275,10 @@ export default class Search extends Component {
                     backgroundColor = {MainColor}
                     barStyle = 'light-content'
                 />
-                {/*搜索栏*/}
-                <View style={styles.search_view}>
-                    <TouchableOpacity onPress={()=>{
-                        this.props.navigation.goBack()}}>
-                        <Image
-                            style={styles.search_view_back}
-                            source={require('../../data/img/icon_back.png')}/>
-                    </TouchableOpacity>
-                    <TextInput
-                        placeholder="search"
-                        placeholderTextColor={GrayColor}
-                        onChangeText={(text)=>this.setState({editValue:text})}
-                        value={this.state.editValue}
-                        underlineColorAndroid='transparent'
-                        style={styles.search_view_edit}
-                    />
-                    <TouchableOpacity onPress={()=>{
-                        if (this.state.editValue==null && this.state.editValue.length==0) {
-                            show("请输入想搜索内容")
-                        } else {
-                            jumpPager(this.props.navigation.navigate,'SearchDetail')
-                        }}}>
-                        <Image
-                            style={styles.search_view_icon}
-                            source={require('../../data/img/icon_search.png')}/>
-                    </TouchableOpacity>
-                </View>
-                {/*推荐栏*/}
-                <View style={styles.recommend_view}>
-                    {this.renderRecommendView()}
-                </View>
+                {this._renderContentView()}
             </View>
         )
     }
-
     renderRecommendView() {
         return Movie_Types.map((item,i)=>{
             return (
@@ -98,13 +299,38 @@ export default class Search extends Component {
             )
         })
     }
-
 }
 
 
 const styles = StyleSheet.create({
     container: {
         flex:1,
+    },
+    content: {
+        flex:1,
+        backgroundColor:MainBg,
+    },
+    modal: {
+        flex:1,
+        justifyContent:'center',
+        alignItems: 'center',
+    },
+    modal_view: {
+        backgroundColor:White,
+        width:200,
+        height:200,
+        borderRadius:10,
+        elevation:8,
+        shadowRadius:8,
+        justifyContent:'center',
+        alignItems: 'center',
+        marginBottom:10,
+    },
+    modal_text:{
+        fontSize:16,
+        color:MainColor,
+        fontWeight:'500',
+        marginTop:10,
     },
     search_view: {
         height:56,
@@ -162,5 +388,76 @@ const styles = StyleSheet.create({
     },
     recommend_view_item_text: {
         fontSize:16,
-    }
+    },
+    result_view: {
+        height:56,
+        width:width,
+        backgroundColor:MainColor,
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
+    result_view: {
+        height:56,
+        flex:1,
+        marginRight:46,
+        alignItems: 'center',
+        justifyContent:'center',
+    },
+    result_title: {
+        fontSize:16,
+        fontWeight:'500',
+        color:WhiteTextColor,
+    },
+    item: {
+        height:itemHight,
+        width:width,
+        flexDirection: 'row',
+        padding:10,
+        alignItems: 'center',
+        borderColor:White,
+        borderBottomWidth:1,
+    },
+    item_img: {
+        width:96,
+        height:155,
+        borderRadius:4,
+        marginRight:10,
+    },
+    item_right:{
+        height:itemHight-20,
+        flex:1,
+        justifyContent:'center',
+    },
+    item_right_title: {
+        color:GrayBlackColor,
+        fontSize:16,
+        fontWeight: '500',
+        marginBottom: 10,
+    },
+    item_right_text: {
+        fontSize:14,
+        color:GrayColor,
+        marginBottom: 4,
+    },
+    item_right_rating: {
+        flexDirection: 'row',
+        marginTop:6,
+        alignItems: 'center',
+    },
+    item_right_rating_text: {
+        fontSize: 14,
+        color: '#ffcc33',
+        fontWeight: '500',
+        marginLeft: 8,
+    },
+    loading_more_view: {
+        width:width,
+        height:56,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loading_more_view_text: {
+        fontSize:16,
+        color:MainColor,
+    },
 })

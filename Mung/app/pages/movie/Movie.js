@@ -76,7 +76,7 @@ export default class Movie extends Component {
         let start = 0;
         if (this.state.hotMovies.start != null) {
             start = this.state.hotMovies.start+1;
-            if (this.state.hotMovies.total == this.state.hotMovies.start) {
+            if (this.state.hotMovies.total <= this.state.hotMovies.start*this.state.hotMovies.count) {
                 this.setState({
                     refreshing: false,
                 })
@@ -140,7 +140,7 @@ export default class Movie extends Component {
                                     />
                                     <Text style={styles.swiper_children_director_name}
                                           numberOfLines={1}>
-                                        {item.directors[0].name}
+                                        {(item.directors[0]!=null?item.directors[0].name:"未知") }
                                     </Text>
                                 </View>
                                 <View style={styles.swiper_children_casts_view}>
