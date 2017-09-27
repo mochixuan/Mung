@@ -10,6 +10,8 @@ import {
     TextInput,
     Modal,
     ActivityIndicator,
+    Animated,
+    Easing,
 } from 'react-native'
 import {width, height, jumpPager} from '../../utils/Utils'
 import ErrorBean from '../../data/http/ErrorBean'
@@ -44,6 +46,7 @@ export default class Search extends Component {
         }
         this.title = "";
         this.HttpMovies = new HttpMovieManager();
+        this.fadeAnim = new Animated.Value(0)
     }
 
     requestData(str) {
@@ -85,6 +88,14 @@ export default class Search extends Component {
                     searchDatas:movies,
                     refreshing: false,
                 })
+                Animated.timing(
+                    this.fadeAnim,
+                    {
+                        toValue: 1.0,
+                        easing:Easing.linear,
+                        useNativeDriver:true,  //不加会卡住在最后一点
+                    }
+                ).start()
             })
             .catch((error)=>{
                 if (this.state.isCannelRequest) {
@@ -218,7 +229,7 @@ export default class Search extends Component {
                             style={styles.search_view_edit}
                         />
                         <TouchableOpacity onPress={()=>{
-                            if (this.state.editValue==null && this.state.editValue.length==0) {
+                            if (this.state.editValue == null || this.state.editValue.length==0) {
                                 show("请输入想搜索内容")
                             } else {
                                 this.refs.textinput.blur()
@@ -226,6 +237,7 @@ export default class Search extends Component {
                                     isShowModal:true,
                                     isCannelRequest: false,
                                 })
+                                this.fadeAnim.setValue(0.0)
                                 this.requestData(this.state.editValue)
                             }}}>
                             <Image
@@ -241,30 +253,43 @@ export default class Search extends Component {
             )
         } else {
             return (
-                <View style={styles.content}>
-                    {/*搜索栏*/}
-                    <View style={styles.search_view}>
-                        <TouchableOpacity onPress={()=>{
-                            this.setState({searchDatas:{}})}}>
-                            <Image
-                                style={styles.search_view_back}
-                                source={require('../../data/img/icon_back.png')}/>
-                        </TouchableOpacity>
-                        <View style={styles.result_view}>
-                            <Text style={styles.result_title} numberOfLines={1}>{this.title}</Text>
+                <Animated.View style={{
+                    flex:1,
+                    opacity:this.fadeAnim,
+                    transform:[{
+                        translateX:this.fadeAnim.interpolate({
+                            inputRange: [0,1.0],
+                            outputRange: [width,0],
+                        }),
+                    }],
+                }}>
+                    <View style={styles.content}>
+                        {/*搜索栏*/}
+                        <View style={styles.search_view}>
+                            <TouchableOpacity onPress={()=>{
+                                this.setState({searchDatas:{}})}}>
+                                <Image
+                                    style={styles.search_view_back}
+                                    source={require('../../data/img/icon_back.png')}/>
+                            </TouchableOpacity>
+                            <View style={styles.result_view}>
+                                <Text style={styles.result_title} numberOfLines={1}>{this.title}</Text>
+                            </View>
                         </View>
+                        {/*列表栏*/}
+                        <FlatList
+                            data = {this.state.searchDatas.subjects}
+                            keyExtractor={(item,index)=>index}
+                            renderItem={({item,index}) => this._renderItemView(item,index)}
+                            getItemLayout={(data,index)=> this._getItemLayout(data,index)}
+                            showsVerticalScrollIndicator={false}/>
                     </View>
-                    {/*列表栏*/}
-                    <FlatList
-                        data = {this.state.searchDatas.subjects}
-                        keyExtractor={(item,index)=>index}
-                        renderItem={({item,index}) => this._renderItemView(item,index)}
-                        getItemLayout={(data,index)=> this._getItemLayout(data,index)}
-                        showsVerticalScrollIndicator={false}/>
-                </View>
+                </Animated.View>
             )
         }
     }
+
+
 
     render() {
         return (
@@ -308,6 +333,7 @@ const styles = StyleSheet.create({
     },
     content: {
         flex:1,
+        width:width,
         backgroundColor:MainBg,
     },
     modal: {
@@ -353,8 +379,6 @@ const styles = StyleSheet.create({
         paddingLeft:8,
         backgroundColor:White,
         borderRadius:30,
-        borderWidth:1,
-        borderColor:GrayColor,
     },
     search_view_icon: {
         width:26,

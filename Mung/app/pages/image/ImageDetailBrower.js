@@ -71,7 +71,8 @@ export default class ImageDetailBrower extends Component {
                                     this.fadeAnim,
                                     {
                                         toValue: 1.0,
-                                        easing:Easing.linear
+                                        easing:Easing.linear,
+                                        useNativeDriver:true,  //不加会卡住在最后一点
                                     }
                                 ).start()
                             }

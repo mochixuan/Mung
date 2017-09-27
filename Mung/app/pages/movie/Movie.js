@@ -20,6 +20,7 @@ import ErrorBean from '../../data/http/ErrorBean'
 import HttpMovieManager from '../../data/http/HttpMovieManager'
 import StarRating from 'react-native-star-rating'
 import LinearGradient from 'react-native-linear-gradient'
+import SplashScreen from 'react-native-splash-screen'
 
 const itemHight = 200;
 const moviesCount = 20;
@@ -70,6 +71,17 @@ export default class Movie extends Component {
         }
         this.HttpMovies  = new HttpMovieManager();
         this.requestData();
+    }
+
+    componentDidMount() {
+        //还是有白屏看来方法后只能这样，后期有时间再改进
+        this.timer = setTimeout(()=>{
+            SplashScreen.hide()
+        },100)
+    }
+
+    componentWillUnmount() {
+        this.timer && clearTimeout(this.timer);
     }
 
     requestData() {
