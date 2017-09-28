@@ -19,32 +19,20 @@ import HttpMovieManager from '../../data/http/HttpMovieManager'
 import TouchableView from '../../widget/TouchableView'
 import StarRating from 'react-native-star-rating'
 import {
-    MainBg, MainColor, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor, Translucent, BlackTextColor,
+    MainBg, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor, Translucent, BlackTextColor,
     GrayColor, White
 } from '../basestyle/BaseStyle'
+
+import {queryThemeColor} from '../../data/realm/RealmManager'
 
 const itemHight = 200;
 const moviesCount = 20;
 
 export default class MovieList extends Component {
 
-    static navigationOptions = ({ navigation }) =>({
-        headerTitle: navigation.state.params.data.title,
-        headerTitleStyle: {
-            color: WhiteTextColor,
-            alignSelf: 'center',
-        },
-        headerTintColor:White,
-        headerStyle: {
-            backgroundColor: MainColor,
-        },
-        headerRight: (<View
-                style={{
-                    width:26,
-                    height:26
-                }}
-            />)
-    })
+    static navigationOptions = {
+        header: null,
+    }
 
     constructor(props) {
         super(props)
@@ -53,6 +41,7 @@ export default class MovieList extends Component {
             isInitSuccess: true,
             movieData:{},
             refreshing: true,
+            MainColor: queryThemeColor(),
         }
         this.index = this.props.navigation.state.params.data.index;
         this.HttpMovies = new HttpMovieManager();
@@ -175,20 +164,20 @@ export default class MovieList extends Component {
                         onRequestClose={() => {
                             this.props.navigation.goBack()
                         }}>
-                        <LinearGradient style={styles.loading_view} colors={[MainColor,WhiteTextColor]}>
+                        <LinearGradient style={styles.loading_view} colors={[this.state.MainColor,WhiteTextColor]}>
                             <ActivityIndicator
                                 animating={true}
-                                color={MainColor}
+                                color={this.state.MainColor}
                                 size='large'/>
-                            <Text style={styles.loading_text}>loading</Text>
+                            <Text style={[styles.loading_text,{color: this.state.MainColor}]}>loading</Text>
                         </LinearGradient>
                     </Modal>
                 ):(
-                    <LinearGradient style={styles.loading_view} colors={[MainColor,WhiteTextColor]}>
+                    <LinearGradient style={styles.loading_view} colors={[this.state.MainColor,WhiteTextColor]}>
                         <TouchableOpacity onPress={()=>{
                             this.setState({isInitSuccess:true})
                             this.requestData()}}>
-                            <Text style={styles.reload_view}>reloading</Text>
+                            <Text style={[styles.reload_view,{color: this.state.MainColor, borderColor:this.state.MainColor}]}>reloading</Text>
                         </TouchableOpacity>
                     </LinearGradient>
                 )
@@ -200,8 +189,22 @@ export default class MovieList extends Component {
                     {/*状态栏*/}
                     <StatusBar
                         animated = {true}
-                        backgroundColor = {MainColor}
+                        backgroundColor = {this.state.MainColor}
                         barStyle = 'light-content'/>
+                    {/*toolbar*/}
+                    <View style={[styles.toolbar,{backgroundColor:this.state.MainColor}]}>
+                        <TouchableOpacity
+                            onPress={()=>{this.props.navigation.goBack()}}>
+                            <Image
+                                source={require('../../data/img/icon_back.png')}
+                                style={styles.toolbar_left_img}
+                                tintColor={White}/>
+                        </TouchableOpacity>
+                        <View style={styles.toolbar_middle}>
+                            <Text style={styles.toolbar_middle_text}>{this.props.navigation.state.params.data.title}</Text>
+                        </View>
+                        <View style={styles.toolbar_right_img}/>
+                    </View>
                     {/*列表*/}
                     <FlatList
                         data = {this.state.movieData.subjects}
@@ -229,21 +232,46 @@ const styles = StyleSheet.create({
         fontSize:18,
         fontWeight: '500',
         marginTop:6,
-        color: MainColor,
     },
     reload_view: {
         padding:8,
         textAlign: 'center',
-        color: MainColor,
         fontSize:20,
         fontWeight: '500',
-        borderColor:MainColor,
         borderWidth:3,
         borderRadius:6,
     },
     container: {
         flex: 1,
         backgroundColor: MainBg,
+    },
+    toolbar: {
+        height:56,
+        width:width,
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
+    toolbar_left_img:{
+        width:26,
+        height:26,
+        alignSelf: 'center',
+        marginLeft: 20,
+    },
+    toolbar_middle: {
+        flex:1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    toolbar_middle_text: {
+        fontSize: 18,
+        fontWeight: '600',
+        color:White
+    },
+    toolbar_right_img: {
+        width:26,
+        height:26,
+        alignSelf: 'center',
+        marginRight: 20,
     },
     item: {
         height:itemHight,

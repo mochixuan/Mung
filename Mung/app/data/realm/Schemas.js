@@ -70,6 +70,16 @@ const ImagesSchema = {
     }
 }
 
+/*简单皮肤样式*/
+const ThemeSchema = {
+    name: 'Theme',
+    primaryKey: 'id',
+    properties: {
+        id: 'int',
+        color: 'string',
+    }
+}
+
 export {
     MovieSchema,
     SubjectSchema,
@@ -77,4 +87,5 @@ export {
     CastsSchema,
     DirectorsSchema,
     ImagesSchema,
+    ThemeSchema,
 }

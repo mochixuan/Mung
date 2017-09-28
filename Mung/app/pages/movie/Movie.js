@@ -10,7 +10,7 @@ import {
     RefreshControl,
     TouchableOpacity,
 } from 'react-native'
-import {MainBg, MainColor, WhiteTextColor, GrayWhiteColor,Translucent} from '../basestyle/BaseStyle'
+import {MainBg, WhiteTextColor, GrayWhiteColor, Translucent, White} from '../basestyle/BaseStyle'
 import Swiper from 'react-native-swiper'
 import {show} from '../../utils/ToastUtils'
 import {width,jumpPager} from '../../utils/Utils'
@@ -21,12 +21,18 @@ import HttpMovieManager from '../../data/http/HttpMovieManager'
 import StarRating from 'react-native-star-rating'
 import LinearGradient from 'react-native-linear-gradient'
 import SplashScreen from 'react-native-splash-screen'
+import {queryThemeColor} from '../../data/realm/RealmManager'
 
 const itemHight = 200;
 const moviesCount = 20;
 
 export default class Movie extends Component {
 
+    static navigationOptions = {
+        header: null,
+    }
+
+    /* 为了换肤,不用这个了
     static navigationOptions = ({ navigation }) =>({
         headerTitle: 'Mung',
         headerTitleStyle: {
@@ -37,12 +43,21 @@ export default class Movie extends Component {
             backgroundColor: MainColor,
         },
         headerLeft:(
-            <View
-                style={{
-                    width:26,
-                    height:26
-                }}
-            />
+            <TouchableOpacity
+                onPress={()=>{
+                    jumpPager(navigation.navigate,"Theme",null)
+                }}>
+                <Image
+                    source={require('../../data/img/icon_theme.png')}
+                    style={{
+                        width:26,
+                        height:26,
+                        alignSelf: 'center',
+                        marginLeft: 20,
+                    }}
+                    tintColor={WhiteTextColor}
+                />
+            </TouchableOpacity>
         ),
         headerRight: (
             <TouchableOpacity
@@ -60,7 +75,7 @@ export default class Movie extends Component {
                     tintColor={WhiteTextColor}
                 />
         </TouchableOpacity>)
-    })
+    })*/
 
     constructor(props) {
         super(props)
@@ -68,9 +83,17 @@ export default class Movie extends Component {
             hotMovies:{},
             refreshing: true,
             isInit: false,
+            MainColor:queryThemeColor(),
         }
         this.HttpMovies  = new HttpMovieManager();
         this.requestData();
+    }
+
+
+    onChangeTheme() {
+        this.setState({
+            MainColor:queryThemeColor(), //技巧
+        })
     }
 
     componentDidMount() {
@@ -136,7 +159,7 @@ export default class Movie extends Component {
                         jumpPager(this.props.navigation.navigate,'MovieDetail',item.id)
                     }}>
                         <View
-                            style={styles.swiper_children_view}>
+                            style={[styles.swiper_children_view,{backgroundColor:this.state.MainColor}]}>
                             <Image
                                 style={styles.swiper_children_cover}
                                 source={{uri:item.images.large}}/>
@@ -225,11 +248,11 @@ export default class Movie extends Component {
                     onPress={()=>{
                         jumpPager(this.props.navigation.navigate,'MovieDetail',item.id)
                     }}>
-                    <View style={styles.flat_item_view}>
+                    <View style={[styles.flat_item_view,{backgroundColor: this.state.MainColor}]}>
                         <Image
                             source={{uri:item.images.large}}
                             style={styles.flat_item_image}/>
-                        <View style={styles.flat_item_detail}>
+                        <View style={[styles.flat_item_detail,{backgroundColor: this.state.MainColor}]}>
                             <Text style={styles.flat_item_title}
                                   numberOfLines={1}>
                                 {item.title}
@@ -289,7 +312,7 @@ export default class Movie extends Component {
                             </Swiper>
                         </View>
                         {/*分类栏*/}
-                        <View style={styles.cate_view}>
+                        <View style={[styles.cate_view,{backgroundColor: this.state.MainColor,}]}>
                             {this._cateChildrenView()}
                         </View>
                     </View>
@@ -340,9 +363,28 @@ export default class Movie extends Component {
                     {/*状态栏*/}
                     <StatusBar
                         animated = {true}
-                        backgroundColor = {MainColor}
+                        backgroundColor = {this.state.MainColor}
                         barStyle = 'light-content'
                     />
+                    <View style={[styles.toolbar,{backgroundColor:this.state.MainColor}]}>
+                        <TouchableOpacity
+                            onPress={()=>{jumpPager(this.props.navigation.navigate,"Theme",this.onChangeTheme.bind(this))}}>
+                            <Image
+                                source={require('../../data/img/icon_theme.png')}
+                                style={styles.toolbar_left_img}
+                                tintColor={White}/>
+                        </TouchableOpacity>
+                        <View style={styles.toolbar_middle}>
+                            <Text style={styles.toolbar_middle_text}>Mung</Text>
+                        </View>
+                        <TouchableOpacity
+                            onPress={()=>{jumpPager(this.props.navigation.navigate,"Search",null)}}>
+                            <Image
+                                source={require('../../data/img/icon_search.png')}
+                                style={styles.toolbar_right_img}
+                                tintColor={White}/>
+                        </TouchableOpacity>
+                    </View>
                     <ScrollView style={styles.scrollview_container}
                                 showsVerticalScrollIndicator={false}
                                 refreshControl={this._refreshControlView()}>
@@ -358,6 +400,34 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: MainBg
+    },
+    toolbar: {
+        height:56,
+        width:width,
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
+    toolbar_left_img:{
+        width:26,
+        height:26,
+        alignSelf: 'center',
+        marginLeft: 20,
+    },
+    toolbar_middle: {
+        flex:1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    toolbar_middle_text: {
+        fontSize: 18,
+        fontWeight: '600',
+        color:White
+    },
+    toolbar_right_img: {
+        width:26,
+        height:26,
+        alignSelf: 'center',
+        marginRight: 20,
     },
     scrollview_container: {
         flex: 1,
@@ -397,7 +467,6 @@ const styles = StyleSheet.create({
     swiper_children_view: {
         height: 200,
         flexDirection: 'row',
-        backgroundColor: MainColor,
         alignItems: 'center',
         margin :10,
         paddingLeft:10,
@@ -466,7 +535,6 @@ const styles = StyleSheet.create({
     cate_view: {
         height: 72,
         flexDirection: 'row',
-        backgroundColor: MainColor,
         marginLeft: 10,
         marginRight: 10,
         borderRadius: 4,
@@ -515,7 +583,6 @@ const styles = StyleSheet.create({
     flat_item_view: {
         height: itemHight-16,
         alignItems: 'center',
-        backgroundColor: MainColor,
         borderRadius: 4,
     },
     flat_item_image: {
@@ -529,7 +596,6 @@ const styles = StyleSheet.create({
         bottom: 0,
         alignItems: 'center',
         padding: 2,
-        backgroundColor: MainColor,
         borderBottomRightRadius:4,
         borderBottomLeftRadius:4,
     },

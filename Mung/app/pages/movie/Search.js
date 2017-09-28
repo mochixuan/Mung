@@ -22,9 +22,11 @@ import TouchableView from '../../widget/TouchableView'
 import {Movie_Types} from '../../data/constant/BaseContant'
 import StarRating from 'react-native-star-rating'
 import {
-    MainBg, MainColor, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor, Translucent, BlackTextColor,
+    MainBg, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor, Translucent, BlackTextColor,
     GrayColor, White
 } from '../basestyle/BaseStyle'
+
+import {queryThemeColor} from '../../data/realm/RealmManager'
 
 const itemHight = 200;
 const moviesCount = 20;
@@ -43,6 +45,7 @@ export default class Search extends Component {
             searchDatas:{},
             refreshing: false,
             isCannelRequest: false,
+            MainColor:queryThemeColor(),
         }
         this.title = "";
         this.HttpMovies = new HttpMovieManager();
@@ -127,8 +130,8 @@ export default class Search extends Component {
                                 <ActivityIndicator
                                     style={{marginRight:6}}
                                     animating={true}
-                                    color={MainColor}/>
-                                <Text style={styles.loading_more_view_text}>加载中</Text>
+                                    color={this.state.MainColor}/>
+                                <Text style={[styles.loading_more_view_text,{color:this.state.MainColor}]}>加载中</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -145,7 +148,7 @@ export default class Search extends Component {
                                 })
                                 this.requestData(this.title)
                             }}}>
-                            <Text style={styles.loading_more_view_text}>加载更多评论</Text>
+                            <Text style={[styles.loading_more_view_text,{color:this.state.MainColor}]}>加载更多评论</Text>
                         </TouchableOpacity>
                     </View>
                 )
@@ -201,18 +204,18 @@ export default class Search extends Component {
                             show("取消搜索")
                         }}>
                         <View style={styles.modal}>
-                            <LinearGradient style={styles.modal_view} colors={[MainColor,WhiteTextColor]}>
+                            <LinearGradient style={styles.modal_view} colors={[this.state.MainColor,WhiteTextColor]}>
                                 <ActivityIndicator
                                     style={{marginRight:6}}
                                     animating={true}
-                                    color={MainColor}
+                                    color={this.state.MainColor}
                                     size='large'/>
-                                <Text style={styles.modal_text}>加载中</Text>
+                                <Text style={[styles.modal_text,{color:this.state.MainColor}]}>加载中</Text>
                             </LinearGradient>
                         </View>
                     </Modal>
                     {/*搜索栏*/}
-                    <View style={styles.search_view}>
+                    <View style={[styles.search_view,{backgroundColor:this.state.MainColor}]}>
                         <TouchableOpacity onPress={()=>{
                             this.props.navigation.goBack()}}>
                             <Image
@@ -265,14 +268,14 @@ export default class Search extends Component {
                 }}>
                     <View style={styles.content}>
                         {/*搜索栏*/}
-                        <View style={styles.search_view}>
+                        <View style={[styles.search_view,{backgroundColor:this.state.MainColor}]}>
                             <TouchableOpacity onPress={()=>{
                                 this.setState({searchDatas:{}})}}>
                                 <Image
                                     style={styles.search_view_back}
                                     source={require('../../data/img/icon_back.png')}/>
                             </TouchableOpacity>
-                            <View style={styles.result_view}>
+                            <View style={[styles.result_view,{backgroundColor:this.state.MainColor}]}>
                                 <Text style={styles.result_title} numberOfLines={1}>{this.title}</Text>
                             </View>
                         </View>
@@ -297,7 +300,7 @@ export default class Search extends Component {
                 {/*状态栏*/}
                 <StatusBar
                     animated = {true}
-                    backgroundColor = {MainColor}
+                    backgroundColor = {this.state.MainColor}
                     barStyle = 'light-content'
                 />
                 {this._renderContentView()}
@@ -354,14 +357,12 @@ const styles = StyleSheet.create({
     },
     modal_text:{
         fontSize:16,
-        color:MainColor,
         fontWeight:'500',
         marginTop:10,
     },
     search_view: {
         height:56,
         width:width,
-        backgroundColor:MainColor,
         alignItems: 'center',
         flexDirection: 'row',
     },
@@ -412,13 +413,6 @@ const styles = StyleSheet.create({
     },
     recommend_view_item_text: {
         fontSize:16,
-    },
-    result_view: {
-        height:56,
-        width:width,
-        backgroundColor:MainColor,
-        alignItems: 'center',
-        flexDirection: 'row',
     },
     result_view: {
         height:56,
@@ -482,6 +476,5 @@ const styles = StyleSheet.create({
     },
     loading_more_view_text: {
         fontSize:16,
-        color:MainColor,
     },
 })

@@ -12,13 +12,14 @@ import {
 } from 'react-native';
 import Swiper from 'react-native-swiper'
 import {width,height} from '../../utils/Utils'
-import {
-    MainBg, MainColor, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor,
+import {MainBg, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor,
     Translucent, BlackTextColor, GrayColor, White, BlackColor } from '../basestyle/BaseStyle'
 import {show} from "../../utils/ToastUtils";
 import HttpMovieManager from '../../data/http/HttpMovieManager'
 import LinearGradient from 'react-native-linear-gradient'
 import ErrorBean from '../../data/http/ErrorBean'
+
+import {queryThemeColor} from '../../data/realm/RealmManager'
 
 export default class ImageDetailBrower extends Component {
 
@@ -32,6 +33,7 @@ export default class ImageDetailBrower extends Component {
             paginationIndex: this.props.navigation.state.params.data.index,
             isInitSuccess:true,
             imageDatas:[],
+            MainColor:queryThemeColor(),
         }
         this.isStartAnim = false;
         this.fadeAnim = new Animated.Value(0)
@@ -95,19 +97,19 @@ export default class ImageDetailBrower extends Component {
         if (this.state.imageDatas.length==0) {
             return (
                 this.state.isInitSuccess?(
-                    <LinearGradient style={styles.loading_view} colors={[MainColor,WhiteTextColor]}>
+                    <LinearGradient style={styles.loading_view} colors={[this.state.MainColor,WhiteTextColor]}>
                         <ActivityIndicator
                             animating={true}
-                            color={MainColor}
+                            color={this.state.MainColor}
                             size='large'/>
-                        <Text style={styles.loading_text}>loading</Text>
+                        <Text style={[styles.loading_text,{color: this.state.MainColor}]}>loading</Text>
                     </LinearGradient>
                 ):(
-                    <LinearGradient style={styles.loading_view} colors={[MainColor,WhiteTextColor]}>
+                    <LinearGradient style={[styles.loading_text,{color: this.state.MainColor}]} colors={[this.state.MainColor,WhiteTextColor]}>
                         <TouchableOpacity onPress={()=>{
                             this.setState({isInitSuccess:true})
                             this.requestPhotos()}}>
-                            <Text style={styles.reload_view}>reloading</Text>
+                            <Text style={[styles.reload_view,{color: this.state.MainColor, borderColor:this.state.MainColor}]}>reloading</Text>
                         </TouchableOpacity>
                     </LinearGradient>
                 )
@@ -115,11 +117,11 @@ export default class ImageDetailBrower extends Component {
             )
         }else {
             return (
-                <LinearGradient style={styles.container} colors={[MainColor,WhiteTextColor]}>
+                <LinearGradient style={styles.container} colors={[this.state.MainColor,WhiteTextColor]}>
                     {/*状态栏*/}
                     <StatusBar
                         animated = {true}
-                        backgroundColor = {MainColor}
+                        backgroundColor = {this.state.MainColor}
                         barStyle = 'light-content'/>
                     {/*状态栏*/}
                     <View style={styles.toolbar_view}>
@@ -168,15 +170,12 @@ const styles = StyleSheet.create({
         fontSize:18,
         fontWeight: '500',
         marginTop:6,
-        color: MainColor,
     },
     reload_view: {
         padding:8,
         textAlign: 'center',
-        color: MainColor,
         fontSize:20,
         fontWeight: '500',
-        borderColor:MainColor,
         borderWidth:3,
         borderRadius:6,
     },

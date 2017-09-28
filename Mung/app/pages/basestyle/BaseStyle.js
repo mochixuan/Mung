@@ -1,6 +1,8 @@
 import {StyleSheet} from 'react-native'
+import {queryThemeColor} from '../../data/realm/RealmManager'
 
-const MainColor = '#937eff'
+//const MainColor = '#937eff'
+
 const GrayColor = '#9D9D9D'
 const GrayBlackColor = '#666666'
 const White = '#ffffff'
@@ -29,7 +31,6 @@ const BaseStyles = StyleSheet.create({
 
 export {
     MainBg,
-    MainColor,
     GrayColor,
     GrayBlackColor,
     Translucent,

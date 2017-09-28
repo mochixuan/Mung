@@ -1,13 +1,14 @@
 import {
     StackNavigator,
-    TabNavigator
+    TabNavigator,
 } from 'react-navigation'
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator'
 import Movie from './pages/movie/Movie'
 import MovieDetail from './pages/movie/MovieDetail'
 import MovieList from './pages/movie/MovieList'
-import ImageDetailBrower from './pages/image/ImageDetailBrower'
-import Search from './pages/search/Search'
+import ImageDetailBrower from './pages/movie/ImageDetailBrower'
+import Theme from './pages/setting/Theme'
+import Search from './pages/movie/Search'
 import {MainBg,MainColor,GrayColor} from './pages/basestyle/BaseStyle'
 
 /*
@@ -53,6 +54,7 @@ const App = StackNavigator({
     MovieList:{screen:MovieList},
     ImageDetailBrower:{screen:ImageDetailBrower},
     Search:{screen:Search},
+    Theme:{screen:Theme},
 },{
     navigationOptions: {
         gesturesEnabled: true,
@@ -62,7 +64,5 @@ const App = StackNavigator({
         screenInterpolator: CardStackStyleInterpolator.forHorizontal
     }))
 })
-
-
 
 export default App

@@ -4,7 +4,8 @@ import {
     RatingSchema,
     CastsSchema,
     DirectorsSchema,
-    ImagesSchema
+    ImagesSchema,
+    ThemeSchema,
 } from './Schemas'
 
 /*
@@ -18,7 +19,8 @@ export default [{
         RatingSchema,
         CastsSchema,
         DirectorsSchema,
-        ImagesSchema
+        ImagesSchema,
+        ThemeSchema,
     ],
     path: 'mung.realm',
     schemaVersion:1,

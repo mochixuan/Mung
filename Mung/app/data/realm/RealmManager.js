@@ -5,17 +5,16 @@ let realm = new Realm(Migrations[Migrations.length-1])
 
 /*-------------Movies--------------*/
 
-let insertMovie = (movie) => {
+const insertMovie = (movie) => {
     try {
         realm.write(()=>{
             realm.create('Movie',movie);
         })
     } catch (error) {
-        console.log("insertMovies",error);
     }
 }
 
-let queryMovie = ()=>{
+const queryMovie = ()=>{
     return realm.objects('Movie');
 }
 
@@ -25,8 +24,40 @@ const deleteMovie = () => {
             realm.delete(realm.objects('Movie'));
         })
     } catch (error) {
-        console.log("deleteMovie",error);
     }
 }
 
-export {insertMovie,queryMovie,deleteMovie}
+/*---------------Theme----------------*/
+const insertThemeColor = (themeColor) => {
+    if (themeColor == null) {
+        return;
+    }
+    try {
+        realm.write(()=>{
+            let color = realm.objectForPrimaryKey('Theme',0);
+            if (color == null) {
+                realm.create('Theme',{
+                    id:0,
+                    color:themeColor,
+                })
+            } else {
+                color.color = themeColor;
+            }
+        })
+    } catch (error) {
+
+    }
+}
+
+const queryThemeColor = ()=>{
+    let themeColor = realm.objects('Theme');
+    if (themeColor == null || themeColor.length == 0) {
+        return '#937eff';
+    } else {
+        return themeColor[0].color;
+    }
+}
+
+
+
+export {insertMovie,queryMovie,deleteMovie,insertThemeColor,queryThemeColor}

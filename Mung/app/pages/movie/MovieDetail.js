@@ -10,7 +10,7 @@ import {
     StatusBar,
 } from 'react-native'
 import {
-    MainBg, MainColor, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor, Translucent, BlackTextColor,
+    MainBg, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor, Translucent, BlackTextColor,
     GrayColor, White
 } from '../basestyle/BaseStyle'
 import {width, height, jumpPager} from '../../utils/Utils'
@@ -21,6 +21,8 @@ import StarRating from 'react-native-star-rating'
 import {show} from "../../utils/ToastUtils";
 import {Default_Photos} from '../../data/constant/BaseContant'
 import HttpMovieManager from '../../data/http/HttpMovieManager'
+
+import {queryThemeColor} from '../../data/realm/RealmManager'
 
 const Header_Height = (height-DEFAULT_NAVBAR_HEIGHT)/2;
 const InitPhoto_Count = 6;
@@ -41,6 +43,7 @@ export default class MovieDetail extends Component {
             isInitSuccess: true,
             IsLoadingComment: true,
             isShowAll:false,
+            MainColor:queryThemeColor()
         }
         this.HttpMovies  = new HttpMovieManager();
         this.requestData()
@@ -122,8 +125,8 @@ export default class MovieDetail extends Component {
     _getParallaxHeaderView() {
         return (
             <LinearGradient
-                colors={[MainColor,WhiteTextColor]}
-                style={styles.header_view}>
+                colors={[this.state.MainColor,WhiteTextColor]}
+                style={[styles.header_view,{backgroundColor:this.state.MainColor}]}>
                 <View style={styles.header_image_view}>
                     <Image
                         style={styles.header_image}
@@ -152,7 +155,7 @@ export default class MovieDetail extends Component {
                     underlayColor='rgba(100,51,200,0.1)'
                     onPress={()=>{this.requestPhotos(InitPhoto_Count)}}>
                     <View style={styles.photos_loading}>
-                        <Text style={styles.photos_item_reloadtext}>重新加载剧照</Text>
+                        <Text style={[styles.photos_item_reloadtext,{color: this.state.MainColor}]}>重新加载剧照</Text>
                     </View>
                 </TouchableOpacity>
             )
@@ -196,7 +199,7 @@ export default class MovieDetail extends Component {
             <View style={styles.commentary_item_view}>
                 <Image
                     source={{uri:item.author.avatar}}
-                    style={styles.commentary_item_auther_img}
+                    style={[styles.commentary_item_auther_img,{borderColor:this.state.MainColor}]}
                 />
                 <View>
                     <View style={styles.commentary_item_view_top}>
@@ -219,7 +222,7 @@ export default class MovieDetail extends Component {
                             <Image
                                 source={require('../../data/img/icon_zan.png')}
                                 style={styles.commentary_item_view_top_right_img}
-                                tintColor={MainColor}
+                                tintColor={this.state.MainColor}
                             />
                             <Text style={styles.commentary_item_view_top_right_num}>{item.useful_count}</Text>
                         </View>
@@ -244,8 +247,8 @@ export default class MovieDetail extends Component {
                         <ActivityIndicator
                             style={{marginRight:6}}
                             animating={true}
-                            color={MainColor}/>
-                        <Text style={styles.commentary_item_loadmore_text}>加载中</Text>
+                            color={this.state.MainColor}/>
+                        <Text style={[styles.commentary_item_loadmore_text,{color:this.state.MainColor}]}>加载中</Text>
                     </View>
                 </TouchableOpacity>
             )
@@ -260,7 +263,7 @@ export default class MovieDetail extends Component {
                         })
                         this.requestCommonary()
                     }}}>
-                    <Text style={styles.commentary_item_loadmore_text}>加载更多评论</Text>
+                    <Text style={[styles.commentary_item_loadmore_text,{color:this.state.MainColor}]}>加载更多评论</Text>
                 </TouchableOpacity>
             )
         }
@@ -279,19 +282,19 @@ export default class MovieDetail extends Component {
         if (this.state.movieData==null) {
             return (
                 this.state.isInitSuccess?(
-                    <LinearGradient style={styles.loading_view} colors={[MainColor,WhiteTextColor]}>
+                    <LinearGradient style={styles.loading_view} colors={[this.state.MainColor,WhiteTextColor]}>
                         <ActivityIndicator
                             animating={true}
-                            color={MainColor}
+                            color={this.state.MainColor}
                             size='large'/>
-                        <Text style={styles.loading_text}>loading</Text>
+                        <Text style={[styles.loading_text,{color: this.state.MainColor}]}>loading</Text>
                     </LinearGradient>
                 ):(
-                    <LinearGradient style={styles.loading_view} colors={[MainColor,WhiteTextColor]}>
+                    <LinearGradient style={styles.loading_view} colors={[this.state.MainColor,WhiteTextColor]}>
                         <TouchableOpacity onPress={()=>{
                             this.setState({isInitSuccess:true})
                             this.requestData()}}>
-                            <Text style={styles.reload_view}>reloading</Text>
+                            <Text style={[styles.reload_view,{color: this.state.MainColor, borderColor:this.state.MainColor,}]}>reloading</Text>
                         </TouchableOpacity>
                     </LinearGradient>
                 )
@@ -302,7 +305,7 @@ export default class MovieDetail extends Component {
                 <ParallaxScrollView
                     windowHeight={Header_Height}
                     navBarTitle={this.state.movieData.title}
-                    navBarColor={MainColor}
+                    navBarColor={this.state.MainColor}
                     navBarTitleColor={WhiteTextColor}
                     leftView={this._getParallaxLeftView()}
                     rightView={<View/>}
@@ -310,7 +313,7 @@ export default class MovieDetail extends Component {
                     {/*状态栏*/}
                     <StatusBar
                         animated = {true}
-                        backgroundColor = {MainColor}
+                        backgroundColor = {this.state.MainColor}
                         barStyle = 'light-content'
                     />
                     <ScrollView style={styles.container}>
@@ -368,7 +371,7 @@ export default class MovieDetail extends Component {
                             {this.state.isShowAll==false?<View style={styles.brief_view_expand}>
                                     <Text
                                         onPress={()=>{this.setState({isShowAll:true})}}
-                                          style={styles.brief_view_expand_text}>展开</Text>
+                                          style={[styles.brief_view_expand_text,{color:this.state.MainColor}]}>展开</Text>
                             </View>:null}
                         </View>
                         {/*影人*/}
@@ -429,15 +432,12 @@ const styles = {
         fontSize:18,
         fontWeight: '500',
         marginTop:6,
-        color: MainColor,
     },
     reload_view: {
         padding:8,
         textAlign: 'center',
-        color: MainColor,
         fontSize:20,
         fontWeight: '500',
-        borderColor:MainColor,
         borderWidth:3,
         borderRadius:6,
     },
@@ -448,7 +448,6 @@ const styles = {
     header_view: {
         width:width,
         height:Header_Height,
-        backgroundColor:MainColor,
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
@@ -551,7 +550,6 @@ const styles = {
     },
     brief_view_expand_text:{
         fontSize:14,
-        color:MainColor,
         lineHeight:24,
         paddingLeft:10,
         backgroundColor:MainBg
@@ -623,7 +621,6 @@ const styles = {
         backgroundColor:GrayWhiteColor,
     },
     photos_item_reloadtext: {
-        color: MainColor,
         fontSize:18,
         fontWeight: '500',
     },
@@ -659,7 +656,6 @@ const styles = {
     },
     commentary_item_loadmore_text: {
         fontSize:16,
-        color:MainColor,
     },
     commentary_item_view: {
         flexDirection: 'row',
@@ -672,7 +668,6 @@ const styles = {
         marginRight:6,
         borderRadius:48,
         borderWidth:1,
-        borderColor:MainColor,
     },
     commentary_item_view_top: {
         flexDirection: 'row',
