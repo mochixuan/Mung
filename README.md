@@ -1,8 +1,10 @@
 # Mung
 
-@(React-Native)[App|Android|IOS|DouBan]
-
 **Mung** 是一个基于React-Native编写，使用豆瓣开源API开发的一个项目。
+
+## [下载](https://fir.im/gc58)
+
+![image](https://github.com/mochixuan/Mung/blob/master/Ui/ui/ic_launcher.png?raw=true)
 
 -------------------
 
@@ -15,8 +17,8 @@
 
 ### 运行结果图
 
-![image](https://github.com/mochixuan/Mung/blob/master/Ui/ic_launcher.png)
-![image](https://github.com/mochixuan/Mung/blob/master/Ui/ic_launcher.png)
+![image](https://github.com/mochixuan/Mung/blob/master/Ui/ppt/icon_ppt1.png?raw=true)
+![image](https://github.com/mochixuan/Mung/blob/master/Ui/ppt/icon_ppt2.png?raw=true)
 
 ### 使用到的框架
 
@@ -25,7 +27,7 @@
 - **react-native-splash-screen** ：实现用优雅的方式解决白屏
 - **react-native-star-rating** ：实现评分等级
 - **react-native-swiper** ：实现Banner功能
-- "realm" : 实现数据存储和版本控制
+- **realm** : 实现数据存储和版本控制
 
 ### 优缺点
 
