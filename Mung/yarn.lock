@@ -3116,10 +3116,6 @@ npmlog@^4.0.2:
     gauge "~2.7.3"
     set-blocking "~2.0.0"
 
-nt-transmit-transparently@^1.0.7:
-  version "1.0.7"
-  resolved "http://registry.npm.taobao.org/nt-transmit-transparently/download/nt-transmit-transparently-1.0.7.tgz#345cf3ffda06ba1bd629935bafac9e7820385076"
-
 number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/number-is-nan/download/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
@@ -3511,17 +3507,6 @@ react-native-drawer-layout@1.3.2:
   resolved "http://registry.npm.taobao.org/react-native-drawer-layout/download/react-native-drawer-layout-1.3.2.tgz#b9740d7663a1dc4f88a61b9c6d93d2d948ea426e"
   dependencies:
     react-native-dismiss-keyboard "1.0.0"
-
-react-native-image-pan-zoom@^2.0.5:
-  version "2.0.7"
-  resolved "http://registry.npm.taobao.org/react-native-image-pan-zoom/download/react-native-image-pan-zoom-2.0.7.tgz#76605310626c965895e9fe285d353feb47da6ec1"
-
-react-native-image-zoom-viewer@^2.0.10:
-  version "2.0.10"
-  resolved "http://registry.npm.taobao.org/react-native-image-zoom-viewer/download/react-native-image-zoom-viewer-2.0.10.tgz#792c4cb7ff0145c36390e4c6703bfe45aa492bd3"
-  dependencies:
-    nt-transmit-transparently "^1.0.7"
-    react-native-image-pan-zoom "^2.0.5"
 
 react-native-linear-gradient@^2.3.0:
   version "2.3.0"
