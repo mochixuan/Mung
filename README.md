@@ -1,6 +1,6 @@
 # Mung
 
-## 1. Mung：是一个基于React-Native编写，使用豆瓣开源API开发的一个项目。
+### 1. Mung：是一个基于React-Native编写，使用豆瓣开源API开发的一个项目。
 
 ![image](https://github.com/mochixuan/Mung/blob/master/Ui/ui/ic_launcher.png?raw=true)
 
@@ -13,10 +13,14 @@
 - **查看电影详情** ：支持查看电影详情包括评论。
 - **一键搜索**： 支持标签和语句查找相关的电影。
 
+-------------------
+
 ### 3. 运行结果图
 
 ![image](https://github.com/mochixuan/Mung/blob/master/Ui/ppt/icon_ppt1.png?raw=true)
 ![image](https://github.com/mochixuan/Mung/blob/master/Ui/ppt/icon_ppt2.png?raw=true)
+
+-------------------
 
 ### 4. 使用到的框架
 
@@ -27,6 +31,8 @@
 - **react-native-swiper** ：实现Banner功能
 - **realm** : 实现数据存储和版本控制
 
+-------------------
+
 ### 5. 优缺点
 
 * 最初想这个项目的时候是想找一个开源的、资源多的、免费的API，实现一个功能比较多的React-Native项目，当在网上找了很久没有找到满意的最后选择了豆瓣Api毕竟开源。
@@ -35,5 +41,7 @@
 * 图片浏览那块图片无法实现手指拉大和缩小，找了一些框架，实现后效果不错，但左右滑时会出现无法滑动问题所以暂时放弃了。
 * 如果有资源的话，后期有时间加上新闻和音乐模块。
 * 由于没有Mac所以没有编译IOS版，但代码都是兼容两个移动端的，里面的所以三方和原生的框架都是选用了兼容双平台的框架，有时间会安装一个黑苹果，如果成功，后期编译出IOS版。
+
+-------------------
 
 ## 6. [下载安装Mung](https://fir.im/gc58)
