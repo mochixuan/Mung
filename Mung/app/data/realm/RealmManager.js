@@ -8,9 +8,19 @@ let realm = new Realm(Migrations[Migrations.length-1])
 const insertMovie = (movie) => {
     try {
         realm.write(()=>{
-            realm.create('Movie',movie);
+            let oldMovies = realm.objects('Movie');
+            if (oldMovies == null || oldMovies.length == 0) {
+                realm.create('Movie',movie);
+            } else {
+                oldMovies[oldMovies.length-1].subjects = movie.subjects;
+                oldMovies[oldMovies.length-1].start = movie.start;
+                oldMovies[oldMovies.length-1].count = movie.count;
+                oldMovies[oldMovies.length-1].total = movie.total;
+                oldMovies[oldMovies.length-1].title = movie.title;
+            }
         })
     } catch (error) {
+        console.error("error",error)
     }
 }
 

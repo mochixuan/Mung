@@ -110,8 +110,8 @@ export default class Movie extends Component {
     requestData() {
         let start = 0;
         if (this.state.hotMovies.start != null) {
-            start = this.state.hotMovies.start+1;
-            if (this.state.hotMovies.total <= this.state.hotMovies.start*this.state.hotMovies.count) {
+            start = this.state.hotMovies.start+2; //服务端数据大量重复
+            if (this.state.hotMovies.total <= this.state.hotMovies.start) {
                 this.setState({
                     refreshing: false,
                 })
@@ -119,7 +119,6 @@ export default class Movie extends Component {
                 return;
             }
         }
-
         this.HttpMovies.getHottingMovie(this.state.isInit,start,moviesCount)
             .then((movies)=>{
                 let preSubjects = this.state.hotMovies.subjects;
@@ -368,7 +367,9 @@ export default class Movie extends Component {
                     />
                     <View style={[styles.toolbar,{backgroundColor:this.state.MainColor}]}>
                         <TouchableOpacity
-                            onPress={()=>{jumpPager(this.props.navigation.navigate,"Theme",this.onChangeTheme.bind(this))}}>
+                            onPress={()=>{
+                                jumpPager(this.props.navigation.navigate,"Theme",this.onChangeTheme.bind(this))
+                            }}>
                             <Image
                                 source={require('../../data/img/icon_theme.png')}
                                 style={styles.toolbar_left_img}
@@ -378,7 +379,9 @@ export default class Movie extends Component {
                             <Text style={styles.toolbar_middle_text}>Mung</Text>
                         </View>
                         <TouchableOpacity
-                            onPress={()=>{jumpPager(this.props.navigation.navigate,"Search",null)}}>
+                            onPress={()=>{
+                                jumpPager(this.props.navigation.navigate,"Search",null)
+                            }}>
                             <Image
                                 source={require('../../data/img/icon_search.png')}
                                 style={styles.toolbar_right_img}
