@@ -9,6 +9,7 @@ import {
     ScrollView,
     RefreshControl,
     TouchableOpacity,
+    Platform,
 } from 'react-native'
 import {MainBg, WhiteTextColor, GrayWhiteColor, Translucent, White} from '../basestyle/BaseStyle'
 import Swiper from 'react-native-swiper'
@@ -356,15 +357,39 @@ export default class Movie extends Component {
         return items;
     }
 
-    render() {
-        return (
-            <View style={styles.container}>
-                    {/*状态栏*/}
+    _renderStatusBar() {
+        if (Platform.OS == 'ios') {
+            return (
+                <View>
                     <StatusBar
                         animated = {true}
                         backgroundColor = {this.state.MainColor}
                         barStyle = 'light-content'
                     />
+                    <View
+                        style={{
+                            backgroundColor:this.state.MainColor,
+                            height:10,
+                        }}
+                    />
+                </View>
+            )
+        } else {
+            return (
+                <StatusBar
+                    animated = {true}
+                    backgroundColor = {this.state.MainColor}
+                    barStyle = 'light-content'
+                />
+            )
+        }
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                    {/*状态栏*/}
+                    {this._renderStatusBar()}
                     <View style={[styles.toolbar,{backgroundColor:this.state.MainColor}]}>
                         <TouchableOpacity
                             onPress={()=>{

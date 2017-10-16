@@ -12,6 +12,7 @@ import {
     ActivityIndicator,
     Animated,
     Easing,
+    Platform,
 } from 'react-native'
 import {width, height, jumpPager} from '../../utils/Utils'
 import ErrorBean from '../../data/http/ErrorBean'
@@ -292,17 +293,39 @@ export default class Search extends Component {
         }
     }
 
-
-
-    render() {
-        return (
-            <View style={styles.container}>
-                {/*状态栏*/}
+    _renderStatusBar() {
+        if (Platform.OS == 'ios') {
+            return (
+                <View>
+                    <StatusBar
+                        animated = {true}
+                        backgroundColor = {this.state.MainColor}
+                        barStyle = 'light-content'
+                    />
+                    <View
+                        style={{
+                            backgroundColor:this.state.MainColor,
+                            height:10,
+                        }}
+                    />
+                </View>
+            )
+        } else {
+            return (
                 <StatusBar
                     animated = {true}
                     backgroundColor = {this.state.MainColor}
                     barStyle = 'light-content'
                 />
+            )
+        }
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                {/*状态栏*/}
+                {this._renderStatusBar()}
                 {this._renderContentView()}
             </View>
         )
@@ -359,6 +382,7 @@ const styles = StyleSheet.create({
         fontSize:16,
         fontWeight:'500',
         marginTop:10,
+        backgroundColor: 'transparent',
     },
     search_view: {
         height:56,
@@ -476,5 +500,6 @@ const styles = StyleSheet.create({
     },
     loading_more_view_text: {
         fontSize:16,
+        backgroundColor: 'transparent',
     },
 })

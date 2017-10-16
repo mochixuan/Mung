@@ -10,6 +10,7 @@ import {
     ActivityIndicator,
     RefreshControl,
     Modal,
+    Platform,
 } from 'react-native'
 import {width, height, jumpPager} from '../../utils/Utils'
 import ErrorBean from '../../data/http/ErrorBean'
@@ -153,6 +154,34 @@ export default class MovieList extends Component {
         )
     }
 
+    _renderStatusBar() {
+        if (Platform.OS == 'ios') {
+            return (
+                <View>
+                    <StatusBar
+                        animated = {true}
+                        backgroundColor = {this.state.MainColor}
+                        barStyle = 'light-content'
+                    />
+                    <View
+                        style={{
+                            backgroundColor:this.state.MainColor,
+                            height:10,
+                        }}
+                    />
+                </View>
+            )
+        } else {
+            return (
+                <StatusBar
+                    animated = {true}
+                    backgroundColor = {this.state.MainColor}
+                    barStyle = 'light-content'
+                />
+            )
+        }
+    }
+
     render() {
         if (this.state.movieData.subjects == null) {
             return (
@@ -187,10 +216,7 @@ export default class MovieList extends Component {
             return (
                 <View style={styles.container}>
                     {/*状态栏*/}
-                    <StatusBar
-                        animated = {true}
-                        backgroundColor = {this.state.MainColor}
-                        barStyle = 'light-content'/>
+                    {this._renderStatusBar()}
                     {/*toolbar*/}
                     <View style={[styles.toolbar,{backgroundColor:this.state.MainColor}]}>
                         <TouchableOpacity
@@ -232,6 +258,7 @@ const styles = StyleSheet.create({
         fontSize:18,
         fontWeight: '500',
         marginTop:6,
+        backgroundColor: 'transparent',
     },
     reload_view: {
         padding:8,

@@ -8,6 +8,7 @@ import {
     ActivityIndicator,
     FlatList,
     StatusBar,
+    Platform,
 } from 'react-native'
 import {
     MainBg, GrayBlackColor, BaseStyles, WhiteTextColor, GrayWhiteColor, Translucent, BlackTextColor,
@@ -432,6 +433,7 @@ const styles = {
         fontSize:18,
         fontWeight: '500',
         marginTop:6,
+        backgroundColor: 'transparent',
     },
     reload_view: {
         padding:8,

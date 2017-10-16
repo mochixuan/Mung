@@ -9,6 +9,7 @@ import {
     ActivityIndicator,
     Animated,
     Easing,
+    Platform,
 } from 'react-native';
 import Swiper from 'react-native-swiper'
 import {width,height} from '../../utils/Utils'
@@ -93,6 +94,34 @@ export default class ImageDetailBrower extends Component {
         })
     }
 
+    _renderStatusBar() {
+        if (Platform.OS == 'ios') {
+            return (
+                <View>
+                    <StatusBar
+                        animated = {true}
+                        backgroundColor = {this.state.MainColor}
+                        barStyle = 'light-content'
+                    />
+                    <View
+                        style={{
+                            backgroundColor:this.state.MainColor,
+                            height:10,
+                        }}
+                    />
+                </View>
+            )
+        } else {
+            return (
+                <StatusBar
+                    animated = {true}
+                    backgroundColor = {this.state.MainColor}
+                    barStyle = 'light-content'
+                />
+            )
+        }
+    }
+
     render() {
         if (this.state.imageDatas.length==0) {
             return (
@@ -119,10 +148,7 @@ export default class ImageDetailBrower extends Component {
             return (
                 <LinearGradient style={styles.container} colors={[this.state.MainColor,WhiteTextColor]}>
                     {/*状态栏*/}
-                    <StatusBar
-                        animated = {true}
-                        backgroundColor = {this.state.MainColor}
-                        barStyle = 'light-content'/>
+                    {this._renderStatusBar()}
                     {/*状态栏*/}
                     <View style={styles.toolbar_view}>
                         <TouchableOpacity onPress={()=>{
@@ -170,6 +196,7 @@ const styles = StyleSheet.create({
         fontSize:18,
         fontWeight: '500',
         marginTop:6,
+        backgroundColor: 'transparent',
     },
     reload_view: {
         padding:8,
@@ -197,6 +224,7 @@ const styles = StyleSheet.create({
         fontSize:16,
         fontWeight: '500',
         marginLeft:16,
+        backgroundColor: 'transparent',
     },
     swiper_view: {
         flex:1,

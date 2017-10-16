@@ -10,6 +10,7 @@ import {
     StatusBar,
     Animated,
     Easing,
+    Platform,
 } from 'react-native'
 import {Theme_Datas} from '../../data/constant/BaseContant'
 import {width, height,} from '../../utils/Utils'
