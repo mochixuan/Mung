@@ -11,7 +11,7 @@ export default class TouchableView extends Component {
     static propsTypes = {
         onPress: React.PropTypes.func,
     }
-    
+
 
     constructor(props) {
         super(props);

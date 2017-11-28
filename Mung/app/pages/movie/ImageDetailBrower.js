@@ -10,6 +10,7 @@ import {
     Animated,
     Easing,
     Platform,
+    CameraRoll
 } from 'react-native';
 import Swiper from 'react-native-swiper'
 import {width,height} from '../../utils/Utils'
@@ -95,6 +96,20 @@ export default class ImageDetailBrower extends Component {
         })
     }
 
+    downToPicture() {
+        try {
+            CameraRoll.saveToCameraRoll(this.state.imageDatas[this.state.paginationIndex].image)
+                .then((res)=>{
+                    show('保存成功')
+                }).catch((error)=>{
+                show('保存失败')
+            })
+        } catch (error) {
+            show('保存异常')
+        }
+
+    }
+
     render() {
         if (this.state.imageDatas.length==0) {
             return (
@@ -135,6 +150,14 @@ export default class ImageDetailBrower extends Component {
                                 source={require('../../data/img/icon_back.png')}/>
                         </TouchableOpacity>
                         <Text style={styles.toolbar_view_text}>{this.state.paginationIndex+1}/{this.state.imageDatas.length}</Text>
+                        <View style={styles.toolbar_view_downview}>
+                            <TouchableOpacity onPress={()=>{
+                                this.downToPicture()}}>
+                                <Image
+                                    style={styles.toolbar_view_down}
+                                    source={require('../../data/img/icon_down.png')}/>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                     {/*大图浏览*/}
                     <View style={styles.swiper_view}>
@@ -196,6 +219,17 @@ const styles = StyleSheet.create({
         width:26,
         height:26,
         marginLeft:16,
+    },
+    toolbar_view_downview: {
+        flex: 1,
+        height: 56,
+        alignItems: 'center',
+        flexDirection: 'row-reverse'
+    },
+    toolbar_view_down: {
+        width:26,
+        height:26,
+        marginRight:16,
     },
     toolbar_view_text: {
         color: WhiteTextColor,
