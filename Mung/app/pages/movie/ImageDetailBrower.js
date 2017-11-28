@@ -19,6 +19,7 @@ import {show} from "../../utils/ToastUtils";
 import HttpMovieManager from '../../data/http/HttpMovieManager'
 import LinearGradient from 'react-native-linear-gradient'
 import ErrorBean from '../../data/http/ErrorBean'
+import ViweControl from 'react-native-zoom-view'
 
 import {queryThemeColor} from '../../data/realm/RealmManager'
 
@@ -64,31 +65,37 @@ export default class ImageDetailBrower extends Component {
                 <View
                     key={i}
                     style={styles.swiper_bigimg_view}>
-                    <Animated.Image
-                        source={{uri:item.image}}
-                        onLoad={()=>{
-                            if (this.isStartAnim) {
-                                this.isStartAnim = false;
-                                this.fadeAnim.setValue(0)
-                                Animated.timing(
-                                    this.fadeAnim,
-                                    {
-                                        toValue: 1.0,
-                                        easing:Easing.linear,
-                                        useNativeDriver:true,  //不加会卡住在最后一点
-                                    }
-                                ).start()
-                            }
-                        }}
-                        style={[styles.swiper_bigimg_image,{
-                            opacity:this.fadeAnim,
-                            transform:[{
-                                scale:this.fadeAnim.interpolate({
-                                    inputRange: [0,1],
-                                    outputRange: [0.2,1],
-                                })
-                            }]
-                        }]}/>
+                    <ViweControl
+                        cropWidth={width}
+                        cropHeight={height-56}
+                        imageWidth={width}
+                        imageHeight={height-56}>
+                        <Animated.Image
+                            source={{uri:item.image}}
+                            onLoad={()=>{
+                                if (this.isStartAnim) {
+                                    this.isStartAnim = false;
+                                    this.fadeAnim.setValue(0)
+                                    Animated.timing(
+                                        this.fadeAnim,
+                                        {
+                                            toValue: 1.0,
+                                            easing:Easing.linear,
+                                            useNativeDriver:true,  //不加会卡住在最后一点
+                                        }
+                                    ).start()
+                                }
+                            }}
+                            style={[styles.swiper_bigimg_image,{
+                                opacity:this.fadeAnim,
+                                transform:[{
+                                    scale:this.fadeAnim.interpolate({
+                                        inputRange: [0,1],
+                                        outputRange: [0.2,1],
+                                    })
+                                }]
+                            }]}/>
+                    </ViweControl>
                 </View>
             )
         })

@@ -12,6 +12,7 @@ import {
     Easing,
     Platform,
 } from 'react-native'
+import NaviBarView from '../../widget/NaviBarView'
 import {Theme_Datas} from '../../data/constant/BaseContant'
 import {width, height,} from '../../utils/Utils'
 import {
@@ -87,6 +88,7 @@ export default class Theme extends Component {
                     backgroundColor = {this.state.MainColor}
                     barStyle = 'light-content'
                 />
+                <NaviBarView/>
                 {/*toolbar*/}
                 <View style={[styles.toolbar,{backgroundColor:this.state.MainColor}]}>
                     <TouchableOpacity
