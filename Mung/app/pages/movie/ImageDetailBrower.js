@@ -10,7 +10,7 @@ import {
     Animated,
     Easing,
     Platform,
-    CameraRoll
+    CameraRoll,
 } from 'react-native';
 import Swiper from 'react-native-swiper'
 import {width,height} from '../../utils/Utils'
@@ -110,6 +110,28 @@ export default class ImageDetailBrower extends Component {
 
     }
 
+    _renderDownImage() {
+        if (Platform.OS === 'ios') {
+            return (
+                <View style={styles.toolbar_view_downview}>
+                    <TouchableOpacity onPress={()=>{
+                        if (Platform.OS === 'android') {
+                            this.checkedPermissionAndDownImage()
+                        } else {
+                            this.downToPicture()
+                        }
+
+                    }}>
+                    <Image
+                        style={styles.toolbar_view_down}
+                        source={require('../../data/img/icon_down.png')}/>
+                </TouchableOpacity>
+            </View>
+            )
+        }
+    }
+
+
     render() {
         if (this.state.imageDatas.length==0) {
             return (
@@ -150,14 +172,9 @@ export default class ImageDetailBrower extends Component {
                                 source={require('../../data/img/icon_back.png')}/>
                         </TouchableOpacity>
                         <Text style={styles.toolbar_view_text}>{this.state.paginationIndex+1}/{this.state.imageDatas.length}</Text>
-                        <View style={styles.toolbar_view_downview}>
-                            <TouchableOpacity onPress={()=>{
-                                this.downToPicture()}}>
-                                <Image
-                                    style={styles.toolbar_view_down}
-                                    source={require('../../data/img/icon_down.png')}/>
-                            </TouchableOpacity>
-                        </View>
+                        {
+                             this._renderDownImage()
+                        }
                     </View>
                     {/*大图浏览*/}
                     <View style={styles.swiper_view}>

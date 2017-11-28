@@ -1,5 +1,9 @@
 # Mung
 
+### 2017-11-28 修改了ios的状态栏问题，和ios单机反馈，ios版添加图片下载到相册，Android端暂时不加
+
+------------------------end----------------------------
+
 ### 1. Mung：是一个基于React-Native编写，使用豆瓣开源API开发的一个项目。
 
 ![image](https://github.com/mochixuan/Mung/blob/master/Ui/ui/ic_launcher.png?raw=true)
