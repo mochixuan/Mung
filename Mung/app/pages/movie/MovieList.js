@@ -25,6 +25,7 @@ import {
 } from '../basestyle/BaseStyle'
 
 import {queryThemeColor} from '../../data/realm/RealmManager'
+import NaviBarView from "../../widget/NaviBarView";
 
 const itemHight = 200;
 const moviesCount = 20;
@@ -154,34 +155,6 @@ export default class MovieList extends Component {
         )
     }
 
-    _renderStatusBar() {
-        if (Platform.OS == 'ios') {
-            return (
-                <View>
-                    <StatusBar
-                        animated = {true}
-                        backgroundColor = {this.state.MainColor}
-                        barStyle = 'light-content'
-                    />
-                    <View
-                        style={{
-                            backgroundColor:this.state.MainColor,
-                            height:10,
-                        }}
-                    />
-                </View>
-            )
-        } else {
-            return (
-                <StatusBar
-                    animated = {true}
-                    backgroundColor = {this.state.MainColor}
-                    barStyle = 'light-content'
-                />
-            )
-        }
-    }
-
     render() {
         if (this.state.movieData.subjects == null) {
             return (
@@ -216,7 +189,12 @@ export default class MovieList extends Component {
             return (
                 <View style={styles.container}>
                     {/*状态栏*/}
-                    {this._renderStatusBar()}
+                    <StatusBar
+                        animated = {true}
+                        backgroundColor = {this.state.MainColor}
+                        barStyle = 'light-content'
+                    />
+                    <NaviBarView backgroundColor={this.state.MainColor}/>
                     {/*toolbar*/}
                     <View style={[styles.toolbar,{backgroundColor:this.state.MainColor}]}>
                         <TouchableOpacity

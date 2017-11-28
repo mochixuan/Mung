@@ -6,14 +6,15 @@ import {
     Animated,
     ScrollView,
     StyleSheet,
-    Dimensions
+    Dimensions,
+    Platform
 } from 'react-native';
 
 const ScrollViewPropTypes = ScrollView.propTypes;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const DEFAULT_WINDOW_MULTIPLIER = 0.50;
-const DEFAULT_NAVBAR_HEIGHT = 56;
+const DEFAULT_NAVBAR_HEIGHT = (Platform.OS === 'ios') ? 56+20 : 56; //解觉iOS通知栏透明问题
 
 class ParallaxScrollView extends Component {
     constructor() {
@@ -79,6 +80,7 @@ class ParallaxScrollView extends Component {
         if (!windowHeight) {
             return null;
         }
+
         return (
             <Animated.View
                 style={{
@@ -87,6 +89,7 @@ class ParallaxScrollView extends Component {
                     flexDirection: 'row',
                     position: 'absolute',
                     zIndex: 1,
+                    paddingTop: 20,
                     backgroundColor: scrollY.interpolate({
                         //inputRange: [-windowHeight, windowHeight * DEFAULT_WINDOW_MULTIPLIER, windowHeight * 0.8],
                         inputRange: [0 ,windowHeight-DEFAULT_NAVBAR_HEIGHT,windowHeight],
@@ -95,13 +98,10 @@ class ParallaxScrollView extends Component {
                 }}
             >
                 {leftView &&
-                <View
-                    style={{
+                <View style={{
                         flex: 1,
                         justifyContent: 'center',
-                        alignItems: 'center'
-                    }}
-                >
+                        alignItems: 'center'}}>
                     {leftView}
                 </View>
                 }

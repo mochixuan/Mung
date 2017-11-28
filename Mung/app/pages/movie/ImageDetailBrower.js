@@ -19,9 +19,9 @@ import {show} from "../../utils/ToastUtils";
 import HttpMovieManager from '../../data/http/HttpMovieManager'
 import LinearGradient from 'react-native-linear-gradient'
 import ErrorBean from '../../data/http/ErrorBean'
-import ViweControl from 'react-native-zoom-view'
 
 import {queryThemeColor} from '../../data/realm/RealmManager'
+import NaviBarView from "../../widget/NaviBarView";
 
 export default class ImageDetailBrower extends Component {
 
@@ -65,68 +65,34 @@ export default class ImageDetailBrower extends Component {
                 <View
                     key={i}
                     style={styles.swiper_bigimg_view}>
-                    <ViweControl
-                        cropWidth={width}
-                        cropHeight={height-56}
-                        imageWidth={width}
-                        imageHeight={height-56}>
-                        <Animated.Image
-                            source={{uri:item.image}}
-                            onLoad={()=>{
-                                if (this.isStartAnim) {
-                                    this.isStartAnim = false;
-                                    this.fadeAnim.setValue(0)
-                                    Animated.timing(
-                                        this.fadeAnim,
-                                        {
-                                            toValue: 1.0,
-                                            easing:Easing.linear,
-                                            useNativeDriver:true,  //不加会卡住在最后一点
-                                        }
-                                    ).start()
-                                }
-                            }}
-                            style={[styles.swiper_bigimg_image,{
-                                opacity:this.fadeAnim,
-                                transform:[{
-                                    scale:this.fadeAnim.interpolate({
-                                        inputRange: [0,1],
-                                        outputRange: [0.2,1],
-                                    })
-                                }]
-                            }]}/>
-                    </ViweControl>
+                    <Animated.Image
+                        source={{uri:item.image}}
+                        onLoad={()=>{
+                            if (this.isStartAnim) {
+                                this.isStartAnim = false;
+                                this.fadeAnim.setValue(0)
+                                Animated.timing(
+                                    this.fadeAnim,
+                                    {
+                                        toValue: 1.0,
+                                        easing:Easing.linear,
+                                        useNativeDriver:true,  //不加会卡住在最后一点
+                                    }
+                                ).start()
+                            }
+                        }}
+                        style={[styles.swiper_bigimg_image,{
+                            opacity:this.fadeAnim,
+                            transform:[{
+                                scale:this.fadeAnim.interpolate({
+                                    inputRange: [0,1],
+                                    outputRange: [0.2,1],
+                                })
+                            }]
+                        }]}/>
                 </View>
             )
         })
-    }
-
-    _renderStatusBar() {
-        if (Platform.OS == 'ios') {
-            return (
-                <View>
-                    <StatusBar
-                        animated = {true}
-                        backgroundColor = {this.state.MainColor}
-                        barStyle = 'light-content'
-                    />
-                    <View
-                        style={{
-                            backgroundColor:this.state.MainColor,
-                            height:10,
-                        }}
-                    />
-                </View>
-            )
-        } else {
-            return (
-                <StatusBar
-                    animated = {true}
-                    backgroundColor = {this.state.MainColor}
-                    barStyle = 'light-content'
-                />
-            )
-        }
     }
 
     render() {
@@ -155,7 +121,11 @@ export default class ImageDetailBrower extends Component {
             return (
                 <LinearGradient style={styles.container} colors={[this.state.MainColor,WhiteTextColor]}>
                     {/*状态栏*/}
-                    {this._renderStatusBar()}
+                    <StatusBar
+                        animated = {true}
+                        backgroundColor = {this.state.MainColor}
+                        barStyle = 'light-content'
+                    />
                     {/*状态栏*/}
                     <View style={styles.toolbar_view}>
                         <TouchableOpacity onPress={()=>{
@@ -214,10 +184,11 @@ const styles = StyleSheet.create({
         borderRadius:6,
     },
     toolbar_view: {
-        height:56,
+        height:56+20,
         width:width,
         position: 'absolute',
         zIndex:1,
+        paddingTop: 20,
         flexDirection: 'row',
         alignItems: 'center',
     },

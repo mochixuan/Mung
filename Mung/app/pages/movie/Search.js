@@ -28,6 +28,7 @@ import {
 } from '../basestyle/BaseStyle'
 
 import {queryThemeColor} from '../../data/realm/RealmManager'
+import NaviBarView from "../../widget/NaviBarView";
 
 const itemHight = 200;
 const moviesCount = 20;
@@ -293,39 +294,16 @@ export default class Search extends Component {
         }
     }
 
-    _renderStatusBar() {
-        if (Platform.OS == 'ios') {
-            return (
-                <View>
-                    <StatusBar
-                        animated = {true}
-                        backgroundColor = {this.state.MainColor}
-                        barStyle = 'light-content'
-                    />
-                    <View
-                        style={{
-                            backgroundColor:this.state.MainColor,
-                            height:10,
-                        }}
-                    />
-                </View>
-            )
-        } else {
-            return (
+    render() {
+        return (
+            <View style={styles.container}>
+                {/*状态栏*/}
                 <StatusBar
                     animated = {true}
                     backgroundColor = {this.state.MainColor}
                     barStyle = 'light-content'
                 />
-            )
-        }
-    }
-
-    render() {
-        return (
-            <View style={styles.container}>
-                {/*状态栏*/}
-                {this._renderStatusBar()}
+                <NaviBarView backgroundColor={this.state.MainColor}/>
                 {this._renderContentView()}
             </View>
         )

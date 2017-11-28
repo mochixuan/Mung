@@ -23,6 +23,7 @@ import StarRating from 'react-native-star-rating'
 import LinearGradient from 'react-native-linear-gradient'
 import SplashScreen from 'react-native-splash-screen'
 import {queryThemeColor} from '../../data/realm/RealmManager'
+import NaviBarView from "../../widget/NaviBarView";
 
 const itemHight = 200;
 const moviesCount = 20;
@@ -357,67 +358,44 @@ export default class Movie extends Component {
         return items;
     }
 
-    _renderStatusBar() {
-        if (Platform.OS == 'ios') {
-            return (
-                <View>
-                    <StatusBar
-                        animated = {true}
-                        backgroundColor = {this.state.MainColor}
-                        barStyle = 'light-content'
-                    />
-                    <View
-                        style={{
-                            backgroundColor:this.state.MainColor,
-                            height:10,
-                        }}
-                    />
-                </View>
-            )
-        } else {
-            return (
+    render() {
+        return (
+            <View style={styles.container}>
+                {/*状态栏*/}
                 <StatusBar
                     animated = {true}
                     backgroundColor = {this.state.MainColor}
                     barStyle = 'light-content'
                 />
-            )
-        }
-    }
-
-    render() {
-        return (
-            <View style={styles.container}>
-                    {/*状态栏*/}
-                    {this._renderStatusBar()}
-                    <View style={[styles.toolbar,{backgroundColor:this.state.MainColor}]}>
-                        <TouchableOpacity
-                            onPress={()=>{
-                                jumpPager(this.props.navigation.navigate,"Theme",this.onChangeTheme.bind(this))
-                            }}>
-                            <Image
-                                source={require('../../data/img/icon_theme.png')}
-                                style={styles.toolbar_left_img}
-                                tintColor={White}/>
-                        </TouchableOpacity>
-                        <View style={styles.toolbar_middle}>
-                            <Text style={styles.toolbar_middle_text}>Mung</Text>
-                        </View>
-                        <TouchableOpacity
-                            onPress={()=>{
-                                jumpPager(this.props.navigation.navigate,"Search",null)
-                            }}>
-                            <Image
-                                source={require('../../data/img/icon_search.png')}
-                                style={styles.toolbar_right_img}
-                                tintColor={White}/>
-                        </TouchableOpacity>
+                <NaviBarView backgroundColor={this.state.MainColor}/>
+                <View style={[styles.toolbar,{backgroundColor:this.state.MainColor}]}>
+                    <TouchableOpacity
+                        onPress={()=>{
+                            jumpPager(this.props.navigation.navigate,"Theme",this.onChangeTheme.bind(this))
+                        }}>
+                        <Image
+                            source={require('../../data/img/icon_theme.png')}
+                            style={styles.toolbar_left_img}
+                            tintColor={White}/>
+                    </TouchableOpacity>
+                    <View style={styles.toolbar_middle}>
+                        <Text style={styles.toolbar_middle_text}>Mung</Text>
                     </View>
-                    <ScrollView style={styles.scrollview_container}
-                                showsVerticalScrollIndicator={false}
-                                refreshControl={this._refreshControlView()}>
-                        {this._getContentView()}
-                    </ScrollView>
+                    <TouchableOpacity
+                        onPress={()=>{
+                            jumpPager(this.props.navigation.navigate,"Search",null)
+                        }}>
+                        <Image
+                            source={require('../../data/img/icon_search.png')}
+                            style={styles.toolbar_right_img}
+                            tintColor={White}/>
+                    </TouchableOpacity>
+                </View>
+                <ScrollView style={styles.scrollview_container}
+                            showsVerticalScrollIndicator={false}
+                            refreshControl={this._refreshControlView()}>
+                    {this._getContentView()}
+                </ScrollView>
             </View>
         )
     }

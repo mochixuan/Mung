@@ -1,7 +1,7 @@
 import React,{Component} from 'react'
 
 import {
-    TouchableHighlight,
+    TouchableOpacity,
     TouchableNativeFeedback,
     Platform,
 } from 'react-native'
@@ -11,6 +11,7 @@ export default class TouchableView extends Component {
     static propsTypes = {
         onPress: React.PropTypes.func,
     }
+    
 
     constructor(props) {
         super(props);
@@ -19,11 +20,11 @@ export default class TouchableView extends Component {
     render() {
         if (Platform.OS == 'ios') {
             return (
-                <TouchableHighlight
+                <TouchableOpacity
                     onPress={this.props.onPress}
                 >
                     {this.props.children}
-                </TouchableHighlight>
+                </TouchableOpacity>
             )
         } else {
             return (

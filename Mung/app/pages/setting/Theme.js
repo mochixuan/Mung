@@ -88,7 +88,7 @@ export default class Theme extends Component {
                     backgroundColor = {this.state.MainColor}
                     barStyle = 'light-content'
                 />
-                <NaviBarView/>
+                <NaviBarView backgroundColor={this.state.MainColor}/>
                 {/*toolbar*/}
                 <View style={[styles.toolbar,{backgroundColor:this.state.MainColor}]}>
                     <TouchableOpacity

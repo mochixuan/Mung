@@ -6,13 +6,17 @@ import {
 
 export default class NaviBarView extends Component {
 
+    static propTypes = {
+        backgroundColor: React.PropTypes.string
+    }
+
     render() {
         const naviHeight = (Platform.OS === 'ios') ?
             20 : 0
         return (
             <View style={{
                 height: naviHeight,
-                backgroundColor: '#00000000'
+                backgroundColor: this.props.backgroundColor
             }}></View>
         )
     }

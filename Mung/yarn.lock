@@ -3560,10 +3560,6 @@ react-native-vector-icons@^4.2.0:
     prop-types "^15.5.10"
     yargs "^8.0.2"
 
-react-native-zoom-view@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/react-native-zoom-view/-/react-native-zoom-view-1.0.1.tgz#8cf9b351d34fc08aa1d849e982df75e6720855fd"
-
 react-native@0.47.2:
   version "0.47.2"
   resolved "http://registry.npm.taobao.org/react-native/download/react-native-0.47.2.tgz#5e55cd84e4947123c86d36ea6f95ab9ed2d0cb19"

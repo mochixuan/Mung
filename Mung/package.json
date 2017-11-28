@@ -14,7 +14,6 @@
 		"react-native-splash-screen": "^3.0.1",
 		"react-native-star-rating": "^1.0.8",
 		"react-native-swiper": "^1.5.10",
-		"react-native-zoom-view": "^1.0.1",
 		"react-navigation": "^1.0.0-beta.11",
 		"realm": "^1.12.0"
 	},
