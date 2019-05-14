@@ -2,6 +2,25 @@
 ## [React-Native版Mung](https://github.com/mochixuan/Mung)
 ## [Flutter版Mung](https://github.com/mochixuan/Mung-Flutter)
 
+# 2019-5-14通知：豆瓣API忽然下线了。
+```
+紧急修复方法：
+需要运行的修改app/data/http/HttpMovieManager.js里的
+
+const BaseUrl = "https://api.douban.com/v2"
+修改为 
+const BaseUrl = "https://douban.uieee.com/v2"
+或者
+const BaseUrl = "http://t.yushu.im/v2"
+```
+网上查找的资料可以运行，测过有效。但这两个都是别的开发者自己写的不能保证长期有效，这次豆瓣把API停了也没说原因，可能过几天就好了，所以地址还是不改，不能运行的可以改一下就可以了，测过有效。
+
+- [豆瓣API官方讨论](https://www.douban.com/group/345245/)
+- [豆瓣API镜像1](https://github.com/zce/weapp-demo/blob/master/README.md)
+- [豆瓣API镜像2](https://www.imooc.com/wenda/detail/385141)
+
+---
+
 # Mung
 
 ### 2018-2-22 添加一个iOS下载链接(一个网友打的包：非常感谢他)
