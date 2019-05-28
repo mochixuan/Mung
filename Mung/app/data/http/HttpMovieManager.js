@@ -6,7 +6,8 @@ import {Base} from '../constant/BaseContant'
 import React from 'react'
 
 /*基础链接头*/
-const BaseUrl = "https://api.douban.com/v2"
+// const BaseUrl = "https://api.douban.com/v2" //豆瓣把开源的停了，下面是映射
+const BaseUrl = "https://douban.uieee.com/v2"
 /*正在热映*/
 const Movie_Hoting_Url = "/movie/in_theaters"
 /*top250*/
